@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BottomNavigationBehavior_Params">
+        <attr name="tabLayoutId" format="reference"></attr>
+    </declare-styleable>
+    <declare-styleable name="BottomNavigationTabLayout">
+        <attr name="activeColorFilter" format="color"></attr>
+        <attr name="bottomTabsMenu" format="reference"></attr>
+    </declare-styleable>
+</resources>

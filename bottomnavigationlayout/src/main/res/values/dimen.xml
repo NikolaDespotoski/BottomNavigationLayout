@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="bottom_navigation_elevation">8dp</dimen>
+    <dimen name="bottom_navigation_min_width">104dp</dimen>
+    <dimen name="bottom_navigation_max_width">168dp</dimen>
+    <dimen name="bottom_navigation_icon_padding_active">6dp</dimen>
+    <dimen name="bottom_navigation_icon_padding_inactive">8dp</dimen>
+    <dimen name="bottom_navigation_height">56dp</dimen>
+    <dimen name="bottom_navigation_item_padding_left">12dp</dimen>
+    <dimen name="bottom_navigation_item_padding_bottom">10dp</dimen>
+    <dimen name="bottom_navigation_item_icon_padding_top_inactive">8dp</dimen>
+    <dimen name="bottom_navigation_item_translationY">5dp</dimen>
+    <dimen name="bottom_navigation_text_size">14sp</dimen>
+    <dimen name="bottom_navigation_width_active">31dp</dimen>
+</resources>
