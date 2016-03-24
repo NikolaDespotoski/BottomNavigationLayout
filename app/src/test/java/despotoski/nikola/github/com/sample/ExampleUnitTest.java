@@ -1,4 +1,4 @@
-package despotoski.nikola.github.com.bottomnavigationlayout;
+package despotoski.nikola.github.com.sample;
 
 import org.junit.Test;
 

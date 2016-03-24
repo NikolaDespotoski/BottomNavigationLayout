@@ -73,8 +73,6 @@ public class Util {
 
     public static int getNavigationBarHeight(Context context) {
         Resources res = context.getResources();
-        int softMenuIdentifier = res
-                .getIdentifier("config_showNavigationBar", "bool", "android");
         int navBarIdentifier = res.getIdentifier("navigation_bar_height",
                 "dimen", "android");
         int navBarHeight = 0;
