@@ -131,10 +131,8 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
                 bottomView.setActiveColorResource(mActiveColorFilter);
 
             }
-            if (i == mSelectedItemPosition && !childAt.isSelected()) {
-                childAt.setSelected(true);
-            }
         }
+        selectTabView();
     }
 
     private LinearLayoutCompat.LayoutParams generateBottomItemLayoutParams() {
@@ -159,7 +157,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     }
 
     private int findMinItemWidth() {
-        return mContainer.getWidth() / mContainer.getChildCount();
+        return mContainer.getMeasuredWidth() / mContainer.getChildCount();
     }
 
     public void setBottomTabs(@MenuRes int menuResId) {
