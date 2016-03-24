@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,7 +24,7 @@ import java.util.List;
  * Created by Nikola on 3/15/2016.
  */
 @CoordinatorLayout.DefaultBehavior(BottomNavigationBehavior.class)
-public class BottomTabLayout extends FrameLayout {
+public class BottomTabLayout extends DrawShadowFrameLayout {
     private static final float MAX_ITEM_WIDTH = 168f;
     private static final int MAX_BOTTOM_NAVIGATION_ITEMS = 5;
     private static final int MIN_BOTTOM_NAVIGATION_ITEMS = 3;
@@ -67,7 +68,7 @@ public class BottomTabLayout extends FrameLayout {
         setupContainer();
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BottomNavigationTabLayout);
-        mActiveColorFilter = a.getResourceId(R.styleable.BottomNavigationTabLayout_activeColorFilter, R.color.colorPrimary);
+        mActiveColorFilter = a.getResourceId(R.styleable.BottomNavigationTabLayout_activeColorFilter, View.NO_ID);
         mBottomTabMenuResId = a.getResourceId(R.styleable.BottomNavigationTabLayout_bottomTabsMenu, View.NO_ID);
         mMaxItemWidth = (int) getResources().getDimension(R.dimen.bottom_navigation_max_width);
         mMinBottomItemWidth = (int) getResources().getDimension(R.dimen.bottom_navigation_min_width);
