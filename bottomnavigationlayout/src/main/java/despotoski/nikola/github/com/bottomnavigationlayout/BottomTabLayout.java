@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.support.annotation.ColorRes;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
@@ -16,7 +15,6 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,6 +155,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     public void setShiftingMode(boolean mShiftingMode) {
         this.mShiftingMode = mShiftingMode;
+        updateBottomNavViews();
     }
 
     private int findMinItemWidth() {

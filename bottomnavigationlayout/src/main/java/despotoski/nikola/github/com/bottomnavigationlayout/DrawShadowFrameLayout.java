@@ -55,7 +55,7 @@ public class DrawShadowFrameLayout extends FrameLayout {
             }
         }
 
-        setWillNotDraw(!mShadowVisible || mShadowDrawable == null);
+        setWillNotDraw(false);
 
     }
 
