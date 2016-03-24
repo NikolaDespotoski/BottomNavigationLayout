@@ -208,8 +208,8 @@ public class BottomNavigationTextView extends TextView {
         ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
                 PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
                 PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize));
-      //  ValueAnimator textAnimator = getTextAnimator(textSize, targetTextSize);
-      //  ValueAnimator paddingAnimator = getPaddingAnimator();
+        //  ValueAnimator textAnimator = getTextAnimator(textSize, targetTextSize);
+        //  ValueAnimator paddingAnimator = getPaddingAnimator();
         mShiftingMode = mShiftingMode && !isAlwaysTextShown;
         if (isAlwaysTextShown && !mShiftingMode) {
             objectAnimator.start();
@@ -349,7 +349,7 @@ public class BottomNavigationTextView extends TextView {
     }
 
     private ColorDrawable getColorDrawable(View view) {
-        return view.getBackground() != null ? ((ColorDrawable) view.getBackground()) : new ColorDrawable(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        return view.getBackground() != null ? ((ColorDrawable) view.getBackground()) : new ColorDrawable(Color.WHITE);
     }
 
 
