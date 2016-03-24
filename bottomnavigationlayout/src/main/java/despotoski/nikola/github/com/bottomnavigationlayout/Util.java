@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -86,5 +88,14 @@ public class Util {
         AnimatorSet set = new AnimatorSet();
         set.playTogether(animators);
         set.start();
+    }
+
+    public static void setBackground(View view, @NonNull Drawable drawable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            view.setBackground(drawable);
+        } else {
+            //noinspection deprecation
+            view.setBackgroundDrawable(drawable);
+        }
     }
 }

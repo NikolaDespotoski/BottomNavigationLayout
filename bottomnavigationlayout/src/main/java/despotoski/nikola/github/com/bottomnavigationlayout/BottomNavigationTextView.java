@@ -121,29 +121,23 @@ public class BottomNavigationTextView extends TextView {
         TypedArray ta = getContext().obtainStyledAttributes(attrs);
         Drawable drawableFromTheme = ta.getDrawable(0);
         ta.recycle();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            setBackground(drawableFromTheme);
-        } else {
-            //noinspection deprecation
-            setBackgroundDrawable(drawableFromTheme);
-        }
-    }
-
-    private void setPivots() {
-        ViewCompat.setPivotX(this, getWidth() + getX() / 2);
-        ViewCompat.setPivotY(this, getHeight() + getY() / 2);
+        Util.setBackground(this, drawableFromTheme);
     }
 
     private float getCurrentTextSize() {
-        boolean isAlwaysTextShown = ((ViewGroup) getParent()).getChildCount() == 3;
+        boolean isAlwaysTextShown = isTextAlwaysShown();
         return isAlwaysTextShown && isSelected() ? ACTIVE_TEXT_SIZE : isAlwaysTextShown && !isSelected() ? INACTIVE_TEXT_SIZE : 0;
     }
 
     private int getInactivePadding() {
-        boolean isAlwaysTextShown = ((ViewGroup) getParent()).getChildCount() == 3;
+        boolean isAlwaysTextShown = isTextAlwaysShown();
         return !isAlwaysTextShown ?
                 (int) ((mViewTopPaddingInactive) + (mOriginalTextSize / 2))
                 : mViewTopPaddingInactive;
+    }
+
+    private boolean isTextAlwaysShown() {
+        return ((ViewGroup) getParent()).getChildCount() == 3;
     }
 
     @Override
@@ -208,8 +202,6 @@ public class BottomNavigationTextView extends TextView {
         ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
                 PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
                 PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize));
-        //  ValueAnimator textAnimator = getTextAnimator(textSize, targetTextSize);
-        //  ValueAnimator paddingAnimator = getPaddingAnimator();
         mShiftingMode = mShiftingMode && !isAlwaysTextShown;
         if (isAlwaysTextShown && !mShiftingMode) {
             objectAnimator.start();
@@ -248,94 +240,15 @@ public class BottomNavigationTextView extends TextView {
 
     }
 
-    private ValueAnimator getWidthAnimator() {
-        ensureInactiveViewWidth();
-        int widthStart = mInactiveWidth;
-        int widthEnd = mInactiveWidth + mActiveViewWidth;
-        if (!isSelected()) {
-            int a = widthEnd;
-            widthEnd = widthStart;
-            widthStart = a;
-        }
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(widthStart, widthEnd);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                getLayoutParams().width = (int) animation.getAnimatedValue();
-                requestLayout();
-            }
-        });
-        return valueAnimator;
-    }
-
     private void ensureInactiveViewWidth() {
         if (mInactiveWidth == 0) {
             mInactiveWidth = Math.max(getWidth(), getLayoutParams().width);
         }
     }
 
-    private ValueAnimator getTextAnimator(float textSize, float targetTextSize) {
-        ValueAnimator objectAnimator = ObjectAnimator.ofFloat(textSize, targetTextSize);
-        objectAnimator.setEvaluator(FLOAT_EVALUATOR);
-        objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float textSize = (float) animation.getAnimatedValue();
-                Log.i("text size animator", " size: " + textSize);
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
-                postInvalidateOnAnimation();
-
-            }
-        });
-        return objectAnimator;
-    }
 
     void setShiftingModeEnabled(boolean shiftingModeEnabled) {
         mShiftingMode = shiftingModeEnabled;
-    }
-
-    private ValueAnimator getTextAlphaAnimator() {
-        int alphaStart = 0;
-        int alphaEnd = 255;
-        if (!isSelected()) {
-            int a = alphaEnd;
-            alphaEnd = alphaStart;
-            alphaStart = a;
-        }
-
-        ValueAnimator alphaAnimator = ObjectAnimator.ofInt(alphaStart, alphaEnd);
-        alphaAnimator.setEvaluator(INT_EVALUATOR);
-        alphaAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int textSize = (int) animation.getAnimatedValue();
-                getPaint().setAlpha(textSize);
-                postInvalidate();
-
-            }
-        });
-        return alphaAnimator;
-    }
-
-    private ValueAnimator getPaddingAnimator() {
-        int paddingStart = getInactivePadding();
-        int paddingEnd = mViewTopPaddingActive;
-        if (!isSelected()) {
-            int temp = paddingEnd;
-            paddingEnd = paddingStart;
-            paddingStart = temp;
-        }
-        ValueAnimator animator = ObjectAnimator.ofInt(paddingStart, paddingEnd);
-        animator.setEvaluator(INT_EVALUATOR);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Integer animatedValue = (Integer) animation.getAnimatedValue();
-                setPadding(getPaddingLeft(), animatedValue, mViewTopPaddingActive, mBottomTextPadding);
-            }
-        });
-        return animator;
     }
 
     private void startParentBackgroundColorAnimator() {
