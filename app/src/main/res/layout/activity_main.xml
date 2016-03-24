@@ -1,8 +1,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="app.despotoski.nikola.sample.com.verticaltablayout.MainActivity">
+    android:layout_height="match_parent">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -28,11 +27,11 @@
     </android.support.v4.widget.NestedScrollView>
 
 
-    <app.despotoski.nikola.sample.com.verticaltablayout.BottomTabLayout
+    <despotoski.nikola.github.com.bottomnavigationlayout.BottomTabLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="?attr/selectableItemBackgroundBorderless"></app.despotoski.nikola.sample.com.verticaltablayout.BottomTabLayout>
+        android:background="?attr/selectableItemBackgroundBorderless"></despotoski.nikola.github.com.bottomnavigationlayout.BottomTabLayout>
 
 </android.support.design.widget.CoordinatorLayout>

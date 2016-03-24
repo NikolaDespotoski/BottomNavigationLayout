@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements BottomTabLayout.O
         BottomTabLayout tabLayout = (BottomTabLayout) findViewById(R.id.tabs);
         tabLayout.setOnNavigationItemSelectionListener(this);
         tabLayout.setShiftingMode(true);
+        tabLayout.setActiveItemColorResource(R.color.active_color);
         BottomTabLayout.BottomTabsBuilder builder = new BottomTabLayout.BottomTabsBuilder();
         builder.addBottomNavigationItem(
                 new BottomNavigationItemBuilder()

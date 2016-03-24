@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.support.annotation.ColorRes;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -210,7 +211,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
             BottomNavigationItem item = build.get(i);
             item.setPosition(i);
             BottomNavigationTextView bottomNavigationTextView = new BottomNavigationTextView(getContext(), item);
-            bottomNavigationTextView.setActiveColorResource(mActiveColorFilter);
+            bottomNavigationTextView.setActiveColor(mActiveColorFilter);
             bottomNavigationTextView.setTag(item);
             mContainer.addView(bottomNavigationTextView, generateBottomItemLayoutParams());
             mBottomTabViews.add(bottomNavigationTextView);
@@ -230,7 +231,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     }
 
-
+    @NonNull
     final View getRevealOverlayView() {
         return mRevealOverlayView;
     }
@@ -238,6 +239,10 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     public void setOnNavigationItemSelectionListener(OnNavigationItemSelectionListener onNavigationItemSelectionListener) {
         this.onNavigationItemSelectionListener = onNavigationItemSelectionListener;
+    }
+
+    public void setActiveItemColorResource(@ColorRes int activeColor) {
+        mActiveColorFilter = activeColor;
     }
 
     public interface OnNavigationItemSelectionListener {
