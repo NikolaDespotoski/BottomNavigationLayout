@@ -36,6 +36,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +76,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     private final List<BottomNavigationTextView> mBottomTabViews = new ArrayList<>(MAX_BOTTOM_NAVIGATION_ITEMS);
     private int mMaxItemWidth;
     private int mInactiveTextColor;
+    private boolean isTablet;
 
     public BottomTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -135,13 +137,28 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     }
 
     private void setupContainer() {
+        isTablet = getResources().getBoolean(R.bool.isTablet);
         mContainer = new LinearLayoutCompat(getContext());
         mContainer.setFocusable(false);
-        mContainer.setPadding(0, 0, (int) getResources().getDimension(R.dimen.bottom_navigation_item_padding_bottom), 0);
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.bottom_navigation_height));
-        layoutParams.gravity = Gravity.TOP;
-        layoutParams.bottomMargin = Util.isNavigationBarTranslucent(getContext()) && !isLandscape() ? Util.getNavigationBarHeight(getContext()) : 0;
+        LayoutParams layoutParams;
+        if (isTablet) {
+            layoutParams = new LayoutParams((int) getResources().getDimension(R.dimen.bottom_navigation_height), LayoutParams.MATCH_PARENT);
+            mContainer.setOrientation(LinearLayoutCompat.VERTICAL);
+            disableBehavior();
+        } else {
+            mContainer.setPadding(0, 0, (int) getResources().getDimension(R.dimen.bottom_navigation_item_padding_bottom), 0);
+            layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.bottom_navigation_height));
+            layoutParams.gravity = Gravity.TOP;
+            layoutParams.bottomMargin = Util.isNavigationBarTranslucent(getContext()) && !isLandscape() ? Util.getNavigationBarHeight(getContext()) : 0;
+        }
         addView(mContainer, layoutParams);
+    }
+
+    private void disableBehavior() {
+        ViewGroup.LayoutParams params = super.getLayoutParams();
+        if (params instanceof CoordinatorLayout.LayoutParams) {
+            ((CoordinatorLayout.LayoutParams) params).setBehavior(null);
+        }
     }
 
     private void setupOverlayView() {

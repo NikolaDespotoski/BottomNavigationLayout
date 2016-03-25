@@ -108,7 +108,7 @@ public final class BottomNavigationTextView extends TextView {
                 ContextCompat.getColor(getContext(), bottomNavigationItem.getParentBackgroundColorResource()) : bottomNavigationItem.getParentColorBackgroundColor();
         mIcon = bottomNavigationItem.getIcon();
         mText = bottomNavigationItem.getText();
-        mTopDrawable = bottomNavigationItem.getIconDrawable();
+        mTopDrawable = DrawableCompat.wrap(bottomNavigationItem.getIconDrawable());
         initialize();
     }
 
@@ -127,8 +127,9 @@ public final class BottomNavigationTextView extends TextView {
         setMaxLines(1);
         setEllipsize(TextUtils.TruncateAt.END);
         if (mTopDrawable == null) {
-            mTopDrawable = ContextCompat.getDrawable(getContext(), mIcon);
+            mTopDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), mIcon));
         }
+
         setCompoundDrawablesWithIntrinsicBounds(null, mTopDrawable, null, null);
         setCompoundDrawablePadding(0);
         mOriginalTextSize = getTextSize();
