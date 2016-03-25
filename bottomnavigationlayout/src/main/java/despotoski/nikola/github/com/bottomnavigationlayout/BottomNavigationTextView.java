@@ -71,8 +71,8 @@ public final class BottomNavigationTextView extends TextView {
     private int mInactiveWidth;
     private int mInactiveTextColor;
     private final RevealViewAnimator mRevealViewImpl =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ?
-            new KitkatRevealViewAnimatorImpl() :
+            Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT ?
+            new LollipopRevealViewAnimator() :
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
                     new PreKitkatRevealViewImpl() :
                     new PrehistoricRevealViewImpl();
@@ -381,7 +381,7 @@ public final class BottomNavigationTextView extends TextView {
         }
     }
 
-    private class KitkatRevealViewAnimatorImpl implements RevealViewAnimator {
+    private class LollipopRevealViewAnimator implements RevealViewAnimator {
         private final TypeEvaluator ARGB_EVALUATOR = new ArgbEvaluator();
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
