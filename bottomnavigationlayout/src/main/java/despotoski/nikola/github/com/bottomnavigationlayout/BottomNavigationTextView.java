@@ -70,8 +70,15 @@ public final class BottomNavigationTextView extends TextView {
     private int mActiveViewWidth;
     private int mInactiveWidth;
     private int mInactiveTextColor;
-    private final RevealViewAnimator mRevealViewImpl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? new KitkatRevealViewAnimatorImpl() : new PreKitkatRevealViewImpl();
-    private final AnimatorCompat mSelectionAnimator = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? new NewEraAnimator() : new PreHistoricAnimator();
+    private final RevealViewAnimator mRevealViewImpl =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ?
+            new KitkatRevealViewAnimatorImpl() :
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
+                    new PreKitkatRevealViewImpl() :
+                    new PrehistoricRevealViewImpl();
+    private final AnimatorCompat mSelectionAnimator =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
+                    new NewEraAnimator() : new PreHistoricAnimator();
 
     public BottomNavigationTextView(Context context) {
         super(context);
@@ -434,7 +441,7 @@ public final class BottomNavigationTextView extends TextView {
 
         @Override
         public void animateBackground() {
-            final BottomTabLayout topParent = (BottomTabLayout) getParent();
+            final BottomTabLayout topParent = (BottomTabLayout) getParent().getParent();
             final ColorDrawable color = getColorDrawable(topParent);
             ValueAnimator rgb = ObjectAnimator.ofInt(color.getColor(), mParentBackgroundColor);
             rgb.setEvaluator(ARGB_EVALUATOR);
