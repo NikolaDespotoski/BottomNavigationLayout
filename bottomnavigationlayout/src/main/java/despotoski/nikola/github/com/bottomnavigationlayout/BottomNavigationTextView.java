@@ -130,6 +130,7 @@ public final class BottomNavigationTextView extends TextView {
             mTopDrawable = ContextCompat.getDrawable(getContext(), mIcon);
         }
         setCompoundDrawablesWithIntrinsicBounds(null, mTopDrawable, null, null);
+        setCompoundDrawablePadding(0);
         mOriginalTextSize = getTextSize();
         Util.runOnAttachedToLayout(this, new Runnable() {
             @Override
@@ -137,7 +138,7 @@ public final class BottomNavigationTextView extends TextView {
                 setTextSize(getCurrentTextSize());
                 int paddingStart = getInactivePadding();
                 mInactiveWidth = getWidth();
-                setPadding(mViewTopPaddingActive * 2, paddingStart, mViewTopPaddingActive * 2, mBottomTextPadding);
+                setPadding(mViewTopPaddingActive * 2, paddingStart, mViewTopPaddingActive * 2, 0);
                 previouslySelected = false;
                 setSelected(isSelected());
             }
@@ -164,7 +165,7 @@ public final class BottomNavigationTextView extends TextView {
     private int getInactivePadding() {
         boolean isAlwaysTextShown = isTextAlwaysShown();
         return !isAlwaysTextShown ?
-                (int) ((mViewTopPaddingInactive) + (mOriginalTextSize / 2))
+                (int) ((mViewTopPaddingInactive))
                 : mViewTopPaddingInactive;
     }
 
@@ -248,7 +249,7 @@ public final class BottomNavigationTextView extends TextView {
     }
 
     private ColorDrawable getColorDrawable(View view) {
-        return view.getBackground() != null ? ((ColorDrawable) view.getBackground()) : new ColorDrawable(Color.WHITE);
+        return view.getBackground() != null && view.getBackground() instanceof ColorDrawable? ((ColorDrawable) view.getBackground()) : new ColorDrawable(Color.WHITE);
     }
 
     public void setInactiveTextColorResource(@ColorRes int inactiveTextColor) {
@@ -287,7 +288,7 @@ public final class BottomNavigationTextView extends TextView {
                 paddingStart = temp;
             }
             startParentBackgroundColorAnimator();
-            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
+            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
                     PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
                     PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize));
             mShiftingMode = mShiftingMode && !isAlwaysTextShown;
@@ -302,7 +303,7 @@ public final class BottomNavigationTextView extends TextView {
                 alphaEnd = alphaStart;
                 alphaStart = a;
             }
-            objectAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
+            objectAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
                     PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
                     PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize),
                     PropertyValuesHolder.ofInt(Properties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd));
@@ -318,7 +319,7 @@ public final class BottomNavigationTextView extends TextView {
                 widthEnd = widthStart;
                 widthStart = a;
             }
-            objectAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
+            objectAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
                     PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
                     PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize),
                     PropertyValuesHolder.ofInt(Properties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd),
@@ -430,9 +431,11 @@ public final class BottomNavigationTextView extends TextView {
             rgb.addUpdateListener(new com.nineoldandroids.animation.ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(com.nineoldandroids.animation.ValueAnimator a) {
-                    DrawableCompat.setTint(color, (Integer) a.getAnimatedValue());
+                    color.setColor((Integer)a.getAnimatedValue());
+                    Util.setBackground(topParent, color);
                 }
             });
+            rgb.start();
         }
     }
 
@@ -448,7 +451,8 @@ public final class BottomNavigationTextView extends TextView {
             rgb.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator a) {
-                    DrawableCompat.setTint(color, (Integer) a.getAnimatedValue());
+                    color.setColor((Integer)a.getAnimatedValue());
+                    Util.setBackground(topParent, color);
                 }
             });
             rgb.start();

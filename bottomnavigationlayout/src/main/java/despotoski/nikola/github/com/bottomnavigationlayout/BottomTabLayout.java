@@ -137,6 +137,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     private void setupContainer() {
         mContainer = new LinearLayoutCompat(getContext());
         mContainer.setFocusable(false);
+        mContainer.setPadding(0, 0, (int) getResources().getDimension(R.dimen.bottom_navigation_item_padding_bottom), 0);
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.bottom_navigation_height));
         layoutParams.gravity = Gravity.TOP;
         layoutParams.bottomMargin = Util.isNavigationBarTranslucent(getContext()) && !isLandscape() ? Util.getNavigationBarHeight(getContext()) : 0;
@@ -267,9 +268,10 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     @Override
     protected Parcelable onSaveInstanceState() {
-        SavedState savedState = new SavedState(super.onSaveInstanceState());
+        Parcelable parcelable = super.onSaveInstanceState();
+        SavedState savedState = new SavedState(parcelable);
         savedState.selectedPosition = mSelectedItemPosition;
-        return savedState;
+        return parcelable;
     }
 
     @Override
