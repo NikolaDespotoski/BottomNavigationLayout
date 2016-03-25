@@ -11,12 +11,12 @@ public class BottomNavigationItemBuilder {
     private String mText;
     private int parentColorBackground;
 
-    public BottomNavigationItemBuilder setIcon(@DrawableRes  int mIcon) {
+    public BottomNavigationItemBuilder setIcon(@DrawableRes int mIcon) {
         this.mIcon = mIcon;
         return this;
     }
 
-    public BottomNavigationItemBuilder setText(@NonNull  String mText) {
+    public BottomNavigationItemBuilder setText(@NonNull String mText) {
         this.mText = mText;
         return this;
     }
@@ -31,6 +31,6 @@ public class BottomNavigationItemBuilder {
     }
 
     public static BottomNavigationItem create(@NonNull Drawable icon, @NonNull String text, @ColorInt int parentColorBackground) {
-        return new BottomNavigationItem(icon, text, parentColorBackground);
+        return new BottomNavigationItem(icon, text, parentColorBackground, false);
     }
 }

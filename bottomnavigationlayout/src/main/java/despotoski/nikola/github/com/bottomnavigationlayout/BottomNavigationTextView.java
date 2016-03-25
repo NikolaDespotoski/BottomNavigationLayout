@@ -20,10 +20,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -80,9 +77,11 @@ public class BottomNavigationTextView extends TextView {
 
     public BottomNavigationTextView(Context context, BottomNavigationItem bottomNavigationItem) {
         super(context);
-        mParentBackgroundColor = ContextCompat.getColor(getContext(), bottomNavigationItem.getParentBackgroundColor());
+        mParentBackgroundColor = bottomNavigationItem.getParentBackgroundColorResource() != View.NO_ID ?
+                ContextCompat.getColor(getContext(), bottomNavigationItem.getParentBackgroundColorResource()) : bottomNavigationItem.getParentColorBackgroundColor();
         mIcon = bottomNavigationItem.getIcon();
         mText = bottomNavigationItem.getText();
+        mTopDrawable = bottomNavigationItem.getIconDrawable();
         initialize();
     }
 
@@ -98,7 +97,9 @@ public class BottomNavigationTextView extends TextView {
         setText(mText);
         setTextColor(Color.WHITE);
         mInactiveTextColor = getCurrentTextColor();
-        mTopDrawable = ContextCompat.getDrawable(getContext(), mIcon);
+        if (mTopDrawable == null) {
+            mTopDrawable = ContextCompat.getDrawable(getContext(), mIcon);
+        }
         setCompoundDrawablesWithIntrinsicBounds(null, mTopDrawable, null, null);
         mOriginalTextSize = getTextSize();
         Util.runOnAttachedToLayout(this, new Runnable() {

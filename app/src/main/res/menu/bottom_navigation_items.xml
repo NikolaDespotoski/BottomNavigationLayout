@@ -14,5 +14,9 @@
         android:icon="@drawable/ic_favorite_white_24dp"
         android:title="@string/app_name"></item>
 
+    <item
+        android:id="@+id/id4"
+        android:icon="@drawable/ic_favorite_white_24dp"
+        android:title="@string/app_name"></item>
 
 </menu>
