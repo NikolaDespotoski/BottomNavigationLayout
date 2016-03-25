@@ -144,7 +144,7 @@ public class BottomNavigationTextView extends TextView {
         TypedArray ta = getContext().obtainStyledAttributes(attrs);
         Drawable drawableFromTheme = ta.getDrawable(0);
         ta.recycle();
-        if(drawableFromTheme != null) {
+        if (drawableFromTheme != null) {
             Util.setBackground(this, drawableFromTheme);
         }
     }
@@ -290,20 +290,18 @@ public class BottomNavigationTextView extends TextView {
         return view.getBackground() != null ? ((ColorDrawable) view.getBackground()) : new ColorDrawable(Color.WHITE);
     }
 
-    public void setInactiveTextColorResource(@ColorRes  int inactiveTextColor) {
+    public void setInactiveTextColorResource(@ColorRes int inactiveTextColor) {
         this.mInactiveTextColor = ContextCompat.getColor(getContext(), inactiveTextColor);
     }
 
-    public void setInactiveTextColor(@ColorInt  int inactiveTextColor) {
+    public void setInactiveTextColor(@ColorInt int inactiveTextColor) {
         this.mInactiveTextColor = inactiveTextColor;
+        setTextColor(!isSelected() ? mInactiveTextColor : getCurrentTextColor());
     }
 
-    public int getmInactiveTextColor() {
+    @ColorInt
+    public int getInactiveTextColor() {
         return mInactiveTextColor;
-    }
-
-    public void setmInactiveTextColor(int mInactiveTextColor) {
-        this.mInactiveTextColor = mInactiveTextColor;
     }
 
 

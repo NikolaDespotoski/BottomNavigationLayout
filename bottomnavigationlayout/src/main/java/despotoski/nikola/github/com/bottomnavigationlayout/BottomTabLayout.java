@@ -228,7 +228,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     private void addBottomNavigationItem(BottomNavigationItem item) {
         BottomNavigationTextView bottomNavigationTextView = new BottomNavigationTextView(getContext(), item);
         bottomNavigationTextView.setActiveColor(mActiveColorFilter);
-        bottomNavigationTextView.setActiveColor(mInactiveTextColor);
+        bottomNavigationTextView.setInactiveTextColor(mInactiveTextColor);
         bottomNavigationTextView.setTag(item);
         mContainer.addView(bottomNavigationTextView, generateBottomItemLayoutParams());
         mBottomTabViews.add(bottomNavigationTextView);
