@@ -66,8 +66,6 @@ public class DrawShadowFrameLayout extends FrameLayout {
             mShadowDrawable.setCallback(this);
         }
         setWillNotDraw(false);
-        setPadding(0, mShadowElevation, 0, 0);
-
     }
 
     @Override
@@ -80,7 +78,7 @@ public class DrawShadowFrameLayout extends FrameLayout {
 
     private void updateShadowBounds() {
         if (mShadowDrawable != null) {
-            mShadowDrawable.setBounds(0, -mShadowElevation, mWidth, mShadowElevation);
+            mShadowDrawable.setBounds(0, 0, mWidth, mShadowElevation);
             ViewCompat.postInvalidateOnAnimation(this);
         }
     }

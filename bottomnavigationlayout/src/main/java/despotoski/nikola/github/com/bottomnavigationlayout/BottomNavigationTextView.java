@@ -287,9 +287,9 @@ public class BottomNavigationTextView extends TextView {
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    topParent.setBackgroundColor(mParentBackgroundColor);
+                    //topParent.setBackgroundColor(mParentBackgroundColor);
                     revealView.setBackgroundColor(mParentBackgroundColor);
-                    revealView.setVisibility(GONE);
+                    //revealView.setVisibility(GONE);
                 }
             });
             final ColorDrawable color = getColorDrawable(revealView);

@@ -102,7 +102,6 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         mContainer.setFocusable(false);
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.bottom_navigation_height));
         layoutParams.gravity = Gravity.TOP;
-        layoutParams.topMargin = getShadowElevation();
         layoutParams.bottomMargin = Util.isNavigationBarTranslucent(getContext()) && !isLandscape() ? Util.getNavigationBarHeight(getContext()) : 0;
         addView(mContainer, layoutParams);
     }
