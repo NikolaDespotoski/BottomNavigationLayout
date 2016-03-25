@@ -79,6 +79,7 @@ Add this library to your module gradle dependencies:
 
 1. Number of items must be between 3 and 5 according to Material Design Bottom Navigation Guidelines
 2. Shifting mode is on when the number of bottom items is greater than 3
+3. This library does not handle cross fade between top-level sections when item is clicked
 
 
 If you spot any oddities please open an issue! Thanks!
