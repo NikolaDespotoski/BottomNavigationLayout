@@ -16,39 +16,18 @@
 
 package despotoski.nikola.github.com.bottomnavigationlayout;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.NinePatchDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.util.Property;
 import android.widget.FrameLayout;
 
 public class DrawShadowFrameLayout extends FrameLayout {
-    private static Property<DrawShadowFrameLayout, Float> SHADOW_ALPHA
-            = new Property<DrawShadowFrameLayout, Float>(Float.class, "shadowAlpha") {
-        @Override
-        public Float get(DrawShadowFrameLayout dsfl) {
-            return dsfl.mAlpha;
-        }
-
-        @Override
-        public void set(DrawShadowFrameLayout dsfl, Float value) {
-            dsfl.mAlpha = value;
-            ViewCompat.postInvalidateOnAnimation(dsfl);
-        }
-    };
     private Drawable mShadowDrawable;
-    private boolean mShadowVisible;
-    private int mWidth, mHeight;
-    private ObjectAnimator mAnimator;
-    private float mAlpha = 1f;
     private int mShadowElevation = 8;
+    private int mWidth;
 
     public DrawShadowFrameLayout(Context context) {
         this(context, null, 0);
@@ -72,7 +51,6 @@ public class DrawShadowFrameLayout extends FrameLayout {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mWidth = w;
-        mHeight = h;
         updateShadowBounds();
     }
 
@@ -91,25 +69,6 @@ public class DrawShadowFrameLayout extends FrameLayout {
         }
     }
 
-
-    public void setShadowVisible(boolean shadowVisible, boolean animate) {
-        this.mShadowVisible = shadowVisible;
-        if (mAnimator != null) {
-            mAnimator.cancel();
-            mAnimator = null;
-        }
-
-        if (animate && mShadowDrawable != null) {
-            mAnimator = ObjectAnimator.ofFloat(this, SHADOW_ALPHA,
-                    shadowVisible ? 0f : 1f,
-                    shadowVisible ? 1f : 0f);
-            mAnimator.setDuration(1000);
-            mAnimator.start();
-        }
-
-        ViewCompat.postInvalidateOnAnimation(this);
-        setWillNotDraw(!mShadowVisible || mShadowDrawable == null);
-    }
 
     public int getShadowElevation() {
         return mShadowElevation;
