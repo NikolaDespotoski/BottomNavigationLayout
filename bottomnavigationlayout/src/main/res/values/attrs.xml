@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="BottomNavigationBehavior_Params">
-        <attr name="tabLayoutId" format="reference"></attr>
+        <attr name="tabLayoutId" format="reference"/>
     </declare-styleable>
     <declare-styleable name="BottomNavigationTabLayout">
-        <attr name="active_item_color_filter" format="color"></attr>
-        <attr name="bottom_tabs_menu" format="reference"></attr>
-        <attr name="shift_mode" format="boolean"></attr>
-        <attr name="bottom_tabs_menu_parent_background_colors" format="reference"></attr>
+        <attr name="active_item_color_filter" format="color"/>
+        <attr name="bottom_tabs_menu" format="reference"/>
+        <attr name="shift_mode" format="boolean"/>
+        <attr name="bottom_tabs_menu_parent_background_colors" format="reference"/>
     </declare-styleable>
 </resources>

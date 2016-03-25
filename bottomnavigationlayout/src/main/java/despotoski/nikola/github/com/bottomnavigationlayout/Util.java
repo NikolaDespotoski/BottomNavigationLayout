@@ -18,7 +18,7 @@ import android.view.WindowManager;
 /**
  * Created by Nikola on 3/24/2016.
  */
-public class Util {
+class Util {
 
     public static void runOnAttachedToLayout(View v, final Runnable runnable) {
         if (ViewCompat.isLaidOut(v)) runnable.run();
@@ -68,7 +68,11 @@ public class Util {
                 return hasSoftwareKeys;
             }
         }
-        return (activity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION) != 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return (activity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION) != 0;
+        } else {
+            return false;
+        }
     }
 
     public static int getNavigationBarHeight(Context context) {

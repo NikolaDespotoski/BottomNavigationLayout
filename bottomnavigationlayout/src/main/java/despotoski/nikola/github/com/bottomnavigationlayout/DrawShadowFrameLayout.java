@@ -25,7 +25,7 @@ import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
 public class DrawShadowFrameLayout extends FrameLayout {
-    private Drawable mShadowDrawable;
+    private final Drawable mShadowDrawable;
     private int mShadowElevation = 8;
     private int mWidth;
     private int mHeight;
@@ -64,11 +64,6 @@ public class DrawShadowFrameLayout extends FrameLayout {
     }
 
     @Override
-    public void setBackground(Drawable background) {
-        super.setBackground(background);
-    }
-
-    @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
         if (mShadowDrawable != null) {
@@ -78,7 +73,7 @@ public class DrawShadowFrameLayout extends FrameLayout {
     }
 
 
-    public int getShadowElevation() {
+    int getShadowElevation() {
         return mShadowElevation;
     }
 }

@@ -11,7 +11,7 @@ import android.widget.TextView;
  */
 public class Properties {
     private static final String PADDING_TOP_NAME = "paddingTop";
-    public static Property<View, Integer> PADDING_TOP = new IntProperty<View>(Integer.class, PADDING_TOP_NAME) {
+    public static final Property<View, Integer> PADDING_TOP = new IntProperty<View>(Integer.class, PADDING_TOP_NAME) {
         @Override
         public Integer get(View object) {
             return object.getPaddingTop();
@@ -29,7 +29,7 @@ public class Properties {
 
 
     private static final String TEXT_VIEW_ALPHA_NAME = "painAlpha";
-    public static Property<TextView, Integer> TEXT_PAINT_ALPHA = new IntProperty<TextView>(Integer.class, TEXT_VIEW_ALPHA_NAME) {
+    public static final Property<TextView, Integer> TEXT_PAINT_ALPHA = new IntProperty<TextView>(Integer.class, TEXT_VIEW_ALPHA_NAME) {
 
         @Override
         public Integer get(TextView object) {
@@ -38,12 +38,12 @@ public class Properties {
 
         @Override
         public void set(TextView object, Integer value) {
-            object.getPaint().setAlpha(value.intValue());
+            object.getPaint().setAlpha(value);
             ViewCompat.postInvalidateOnAnimation(object);
         }
     };
     private static final String VIEW_WIDTH_NAME = "view_width";
-    public static Property<View, Integer> VIEW_WIDTH = new IntProperty<View>(Integer.class, VIEW_WIDTH_NAME) {
+    public static final Property<View, Integer> VIEW_WIDTH = new IntProperty<View>(Integer.class, VIEW_WIDTH_NAME) {
 
         @Override
         public Integer get(View object) {
@@ -58,7 +58,7 @@ public class Properties {
     };
 
     private static final String TEXT_SIZE_NAME = "textSize";
-    public static Property<TextView, Float> TEXT_SIZE = new FloatProperty<TextView>(Float.class, TEXT_SIZE_NAME) {
+    public static final Property<TextView, Float> TEXT_SIZE = new FloatProperty<TextView>(Float.class, TEXT_SIZE_NAME) {
 
         @Override
         public Float get(TextView object) {
@@ -67,7 +67,7 @@ public class Properties {
 
         @Override
         public void set(TextView object, Float value) {
-            object.setTextSize(TypedValue.COMPLEX_UNIT_SP, value.floatValue());
+            object.setTextSize(TypedValue.COMPLEX_UNIT_SP, value);
         }
     };
 

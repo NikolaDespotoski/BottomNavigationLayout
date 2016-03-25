@@ -53,7 +53,7 @@ public class BottomNavigationTextView extends TextView {
     private int mActiveViewWidth;
     private int mInactiveWidth;
     private int mInactiveTextColor;
-    private RevealViewAnimator mRevealViewImpl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? new KitkatRevealViewAnimatorImpl() : new PreKitkatRevealViewImpl();
+    private final RevealViewAnimator mRevealViewImpl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? new KitkatRevealViewAnimatorImpl() : new PreKitkatRevealViewImpl();
 
     public BottomNavigationTextView(Context context) {
         super(context);
@@ -127,7 +127,9 @@ public class BottomNavigationTextView extends TextView {
         TypedArray ta = getContext().obtainStyledAttributes(attrs);
         Drawable drawableFromTheme = ta.getDrawable(0);
         ta.recycle();
-        Util.setBackground(this, drawableFromTheme);
+        if(drawableFromTheme != null) {
+            Util.setBackground(this, drawableFromTheme);
+        }
     }
 
     private float getCurrentTextSize() {

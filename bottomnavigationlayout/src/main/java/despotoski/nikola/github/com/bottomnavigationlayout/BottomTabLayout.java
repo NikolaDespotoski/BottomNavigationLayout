@@ -30,16 +30,14 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     private static final int MAX_BOTTOM_NAVIGATION_ITEMS = 5;
     private static final int MIN_BOTTOM_NAVIGATION_ITEMS = 3;
     private int[] mParentBackgroundColors;
-    private int mParentBackgroundColorsResId;
     private View mRevealOverlayView;
     private LinearLayoutCompat mContainer;
-    private int mBottomTabMenuResId;
     private int mActiveColorFilter;
     private int mSelectedItemPosition = View.NO_ID;
     private View mCurrentNavigationItem;
     private boolean mAlwaysShowText = false;
     private BottomTabLayout.OnNavigationItemSelectionListener onNavigationItemSelectionListener;
-    private OnClickListener mBottomTabSelectionClickListener = new OnClickListener() {
+    private final OnClickListener mBottomTabSelectionClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             if (!v.isSelected()) {
@@ -55,7 +53,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     };
     private int mMinBottomItemWidth;
     private boolean mShiftingMode;
-    private List<BottomNavigationTextView> mBottomTabViews = new ArrayList<>(MAX_BOTTOM_NAVIGATION_ITEMS);
+    private final List<BottomNavigationTextView> mBottomTabViews = new ArrayList<>(MAX_BOTTOM_NAVIGATION_ITEMS);
     private int mMaxItemWidth;
 
     public BottomTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -83,16 +81,16 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
                 R.styleable.BottomNavigationTabLayout);
         mShiftingMode = a.getBoolean(R.styleable.BottomNavigationTabLayout_shift_mode, false);
         mActiveColorFilter = a.getResourceId(R.styleable.BottomNavigationTabLayout_active_item_color_filter, View.NO_ID);
-        mBottomTabMenuResId = a.getResourceId(R.styleable.BottomNavigationTabLayout_bottom_tabs_menu, View.NO_ID);
-        if (mBottomTabMenuResId != View.NO_ID) {
-            mParentBackgroundColorsResId = a.getResourceId(R.styleable.BottomNavigationTabLayout_bottom_tabs_menu_parent_background_colors, View.NO_ID);
-            mParentBackgroundColors = getResources().getIntArray(mParentBackgroundColorsResId);
+        int bottomTabMenuResId = a.getResourceId(R.styleable.BottomNavigationTabLayout_bottom_tabs_menu, View.NO_ID);
+        if (bottomTabMenuResId != View.NO_ID) {
+            int parentBackgroundColorsResId = a.getResourceId(R.styleable.BottomNavigationTabLayout_bottom_tabs_menu_parent_background_colors, View.NO_ID);
+            mParentBackgroundColors = getResources().getIntArray(parentBackgroundColorsResId);
         }
         mMaxItemWidth = (int) getResources().getDimension(R.dimen.bottom_navigation_max_width);
         mMinBottomItemWidth = (int) getResources().getDimension(R.dimen.bottom_navigation_min_width);
         mContainer.setOrientation(LinearLayoutCompat.HORIZONTAL);
         mContainer.setGravity(Gravity.CENTER | Gravity.CENTER_HORIZONTAL);
-        setBottomTabs(mBottomTabMenuResId, mParentBackgroundColors);
+        setBottomTabs(bottomTabMenuResId, mParentBackgroundColors);
         Util.runOnAttachedToLayout(this, new Runnable() {
             @Override
             public void run() {
@@ -159,8 +157,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         if (isLandscape()) {
             mMinBottomItemWidth = Math.min(mMinBottomItemWidth, mMaxItemWidth);
         }
-        LinearLayoutCompat.LayoutParams layoutParams = new LinearLayoutCompat.LayoutParams(mMinBottomItemWidth, (int) getResources().getDimension(R.dimen.bottom_navigation_height));
-        return layoutParams;
+        return new LinearLayoutCompat.LayoutParams(mMinBottomItemWidth, (int) getResources().getDimension(R.dimen.bottom_navigation_height));
     }
 
     private boolean isLandscape() {
