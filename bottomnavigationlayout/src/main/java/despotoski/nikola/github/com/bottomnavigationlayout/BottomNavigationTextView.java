@@ -21,8 +21,6 @@ package despotoski.nikola.github.com.bottomnavigationlayout;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
-import android.animation.FloatEvaluator;
-import android.animation.IntEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TypeEvaluator;
@@ -54,8 +52,6 @@ public final class BottomNavigationTextView extends TextView {
 
     private static final float ACTIVE_TEXT_SIZE = 14;
     private static final float INACTIVE_TEXT_SIZE = 12;
-    private static final TypeEvaluator FLOAT_EVALUATOR = new FloatEvaluator();
-    private static final TypeEvaluator INT_EVALUATOR = new IntEvaluator();
     private String mText;
     private int mIcon;
     private int mParentBackgroundColor;
@@ -64,8 +60,6 @@ public final class BottomNavigationTextView extends TextView {
     private int mViewTopPaddingInactive;
     private int mViewTopPaddingActive;
     private Drawable mTopDrawable;
-    private float mOriginalTextSize;
-    private int mBottomTextPadding;
     private boolean mShiftingMode = false;
     private int mActiveViewWidth;
     private int mInactiveWidth;
@@ -117,7 +111,6 @@ public final class BottomNavigationTextView extends TextView {
         setRipple();
         mViewTopPaddingInactive = (int) getResources().getDimension(R.dimen.bottom_navigation_icon_padding_inactive);
         mViewTopPaddingActive = (int) getResources().getDimension(R.dimen.bottom_navigation_icon_padding_active);
-        mBottomTextPadding = (int) getResources().getDimension(R.dimen.bottom_navigation_item_padding_bottom);
         mActiveViewWidth = (int) getResources().getDimension(R.dimen.bottom_navigation_width_active);
         setGravity(Gravity.CENTER);
         setTextIsSelectable(false);
@@ -132,7 +125,6 @@ public final class BottomNavigationTextView extends TextView {
 
         setCompoundDrawablesWithIntrinsicBounds(null, mTopDrawable, null, null);
         setCompoundDrawablePadding(0);
-        mOriginalTextSize = getTextSize();
         Util.runOnAttachedToLayout(this, new Runnable() {
             @Override
             public void run() {

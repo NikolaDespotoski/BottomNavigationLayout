@@ -271,7 +271,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     public void populateBottomTabItems(@NonNull BottomTabsBuilder builder) {
         if (mContainer.getChildCount() >= MIN_BOTTOM_NAVIGATION_ITEMS) {
-            checkBottomItemGuidelines(getChildCount());
+            checkBottomItemGuidelines(mContainer.getChildCount());
         }
         List<BottomNavigationItem> build = builder.build();
         for (int i = 0; i < build.size(); i++) {
