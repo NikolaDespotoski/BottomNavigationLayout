@@ -36,7 +36,7 @@ import android.view.WindowManager;
 /**
  * Created by Nikola on 3/24/2016.
  */
-class Util {
+final class Util {
 
     public static void runOnAttachedToLayout(View v, final Runnable runnable) {
         if (ViewCompat.isLaidOut(v)) runnable.run();

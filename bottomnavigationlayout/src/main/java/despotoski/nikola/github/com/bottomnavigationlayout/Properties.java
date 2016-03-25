@@ -27,7 +27,7 @@ import android.widget.TextView;
 /**
  * Created by Nikola on 3/24/2016.
  */
-public class Properties {
+final class Properties {
     private static final String PADDING_TOP_NAME = "paddingTop";
     public static final Property<View, Integer> PADDING_TOP = new IntProperty<View>(Integer.class, PADDING_TOP_NAME) {
         @Override

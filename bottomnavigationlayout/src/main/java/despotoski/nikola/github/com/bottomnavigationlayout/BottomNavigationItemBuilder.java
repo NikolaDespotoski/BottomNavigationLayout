@@ -24,7 +24,7 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
-public class BottomNavigationItemBuilder {
+public final class BottomNavigationItemBuilder {
     private int mIcon;
     private String mText;
     private int parentColorBackground;

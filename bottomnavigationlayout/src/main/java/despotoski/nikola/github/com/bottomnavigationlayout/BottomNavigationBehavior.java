@@ -32,7 +32,7 @@ import android.view.animation.Interpolator;
 /**
  * Created by Nikola D. on 3/15/2016.
  */
-public class BottomNavigationBehavior<V extends View> extends VerticalScrollingBehavior<V> {
+public final class BottomNavigationBehavior<V extends View> extends VerticalScrollingBehavior<V> {
     private static final Interpolator INTERPOLATOR = new LinearOutSlowInInterpolator();
     private int mTabLayoutId;
     private boolean hidden = false;

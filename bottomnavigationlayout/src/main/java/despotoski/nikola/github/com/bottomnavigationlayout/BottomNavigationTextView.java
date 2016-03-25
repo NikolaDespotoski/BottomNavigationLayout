@@ -49,7 +49,7 @@ import android.widget.TextView;
 /**
  * Created by Nikola on 3/23/2016.
  */
-public class BottomNavigationTextView extends TextView {
+public final class BottomNavigationTextView extends TextView {
 
 
     private static final float ACTIVE_TEXT_SIZE = 14;

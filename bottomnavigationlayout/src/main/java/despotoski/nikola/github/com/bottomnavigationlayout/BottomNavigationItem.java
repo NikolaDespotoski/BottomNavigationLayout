@@ -28,7 +28,7 @@ import android.view.View;
 /**
  * Created by Nikola D. on 3/18/2016.
  */
-public class BottomNavigationItem {
+public final class BottomNavigationItem {
 
 
     private int parentColorBackgroundColor;
