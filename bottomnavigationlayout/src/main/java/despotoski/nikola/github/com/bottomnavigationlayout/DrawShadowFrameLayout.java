@@ -28,6 +28,7 @@ public class DrawShadowFrameLayout extends FrameLayout {
     private Drawable mShadowDrawable;
     private int mShadowElevation = 8;
     private int mWidth;
+    private int mHeight;
 
     public DrawShadowFrameLayout(Context context) {
         this(context, null, 0);
@@ -51,14 +52,21 @@ public class DrawShadowFrameLayout extends FrameLayout {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mWidth = w;
+        mHeight = h;
         updateShadowBounds();
     }
 
     private void updateShadowBounds() {
         if (mShadowDrawable != null) {
             mShadowDrawable.setBounds(0, 0, mWidth, mShadowElevation);
+            getBackground().setBounds(0, mShadowDrawable.getIntrinsicHeight(), mWidth, mHeight);
             ViewCompat.postInvalidateOnAnimation(this);
         }
+    }
+
+    @Override
+    public void setBackground(Drawable background) {
+        super.setBackground(background);
     }
 
     @Override

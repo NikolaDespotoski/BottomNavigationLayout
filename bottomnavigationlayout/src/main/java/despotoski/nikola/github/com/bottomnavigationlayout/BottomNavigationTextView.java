@@ -200,6 +200,7 @@ public class BottomNavigationTextView extends TextView {
             paddingEnd = paddingStart;
             paddingStart = temp;
         }
+        startParentBackgroundColorAnimator();
         ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
                 PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
                 PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize));
@@ -208,7 +209,6 @@ public class BottomNavigationTextView extends TextView {
             objectAnimator.start();
             return;
         }
-        startParentBackgroundColorAnimator();
         int alphaStart = 0;
         int alphaEnd = 255;
         if (!isSelected()) {
@@ -288,7 +288,7 @@ public class BottomNavigationTextView extends TextView {
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    //topParent.setBackgroundColor(mParentBackgroundColor);
+                    topParent.setBackgroundColor(mParentBackgroundColor);
                     revealView.setBackgroundColor(mParentBackgroundColor);
                     //revealView.setVisibility(GONE);
                 }
