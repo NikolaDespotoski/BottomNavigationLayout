@@ -58,13 +58,23 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     private List<BottomNavigationTextView> mBottomTabViews = new ArrayList<>(MAX_BOTTOM_NAVIGATION_ITEMS);
     private int mMaxItemWidth;
 
+    public BottomTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initalize(context, attrs);
+    }
+
     public BottomTabLayout(Context context) {
         super(context);
         removeAllViews();
+
     }
 
     public BottomTabLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        initalize(context, attrs);
+    }
+
+    private void initalize(Context context, AttributeSet attrs) {
         removeAllViews();
         setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
         setupOverlayView();
@@ -187,16 +197,19 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         checkBottomItemGuidelines(size);
         for (int i = 0; i < size; i++) {
             MenuItem item = menuBuilder.getItem(i);
-            newBottomTab(item, parentBackgroundColors[i]);
+            BottomNavigationItem bottomNavigationItem = BottomNavigationItemBuilder.create(item.getIcon(), String.valueOf(item.getTitle()), parentBackgroundColors[i]);
+            bottomNavigationItem.setPosition(i);
+            addBottomNavigationItem(bottomNavigationItem);
         }
     }
 
-    private void newBottomTab(MenuItem item, int parentBackgroundColor) {
-        addBottomNavigationItem(BottomNavigationItemBuilder.create(item.getIcon(), String.valueOf(item.getTitle()), parentBackgroundColor));
-    }
 
-    private void addBottomNavigationItem(BottomNavigationItem bottomNavigationItem) {
-
+    private void addBottomNavigationItem(BottomNavigationItem item) {
+        BottomNavigationTextView bottomNavigationTextView = new BottomNavigationTextView(getContext(), item);
+        bottomNavigationTextView.setActiveColor(mActiveColorFilter);
+        bottomNavigationTextView.setTag(item);
+        mContainer.addView(bottomNavigationTextView, generateBottomItemLayoutParams());
+        mBottomTabViews.add(bottomNavigationTextView);
     }
 
     public void setSelectedItemPosition(int selectedItemPosition) {
@@ -224,11 +237,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         for (int i = 0; i < build.size(); i++) {
             BottomNavigationItem item = build.get(i);
             item.setPosition(i);
-            BottomNavigationTextView bottomNavigationTextView = new BottomNavigationTextView(getContext(), item);
-            bottomNavigationTextView.setActiveColor(mActiveColorFilter);
-            bottomNavigationTextView.setTag(item);
-            mContainer.addView(bottomNavigationTextView, generateBottomItemLayoutParams());
-            mBottomTabViews.add(bottomNavigationTextView);
+            addBottomNavigationItem(item);
         }
         updateBottomNavViews();
         selectTabView();

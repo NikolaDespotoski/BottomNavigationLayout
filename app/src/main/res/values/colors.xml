@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="active_color">#d32f2f</color>
+    <array name="menu_parent_background_colors">
+        <item>@android:color/holo_red_light</item>
+        <item>@android:color/holo_blue_bright</item>
+        <item>@android:color/holo_green_dark</item>
+    </array>
 </resources>
