@@ -19,6 +19,8 @@ package despotoski.nikola.github.com.bottomnavigationlayout;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.support.v4.content.ContextCompat;
@@ -28,13 +30,25 @@ import android.util.Property;
 import android.widget.FrameLayout;
 
 public class DrawShadowFrameLayout extends FrameLayout {
+    private static Property<DrawShadowFrameLayout, Float> SHADOW_ALPHA
+            = new Property<DrawShadowFrameLayout, Float>(Float.class, "shadowAlpha") {
+        @Override
+        public Float get(DrawShadowFrameLayout dsfl) {
+            return dsfl.mAlpha;
+        }
+
+        @Override
+        public void set(DrawShadowFrameLayout dsfl, Float value) {
+            dsfl.mAlpha = value;
+            ViewCompat.postInvalidateOnAnimation(dsfl);
+        }
+    };
     private Drawable mShadowDrawable;
-    private NinePatchDrawable mShadowNinePatchDrawable;
-    private int mShadowTopOffset = 0;
     private boolean mShadowVisible;
     private int mWidth, mHeight;
     private ObjectAnimator mAnimator;
     private float mAlpha = 1f;
+    private int mShadowElevation = 8;
 
     public DrawShadowFrameLayout(Context context) {
         this(context, null, 0);
@@ -51,8 +65,8 @@ public class DrawShadowFrameLayout extends FrameLayout {
         if (mShadowDrawable != null) {
             mShadowDrawable.setCallback(this);
         }
-
         setWillNotDraw(false);
+        setPadding(0, mShadowElevation, 0, 0);
 
     }
 
@@ -66,26 +80,19 @@ public class DrawShadowFrameLayout extends FrameLayout {
 
     private void updateShadowBounds() {
         if (mShadowDrawable != null) {
-            mShadowDrawable.setBounds(0, 0, mWidth, mShadowDrawable.getIntrinsicHeight());
+            mShadowDrawable.setBounds(0, -mShadowElevation, mWidth, mShadowElevation);
+            ViewCompat.postInvalidateOnAnimation(this);
         }
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        if (mShadowDrawable != null && mShadowVisible) {
-            if (mShadowNinePatchDrawable != null) {
-                mShadowNinePatchDrawable.getPaint().setAlpha((int) (255 * mAlpha));
-            }
+        if (mShadowDrawable != null) {
             mShadowDrawable.draw(canvas);
         }
     }
 
-    public void setShadowTopOffset(int shadowTopOffset) {
-        this.mShadowTopOffset = shadowTopOffset;
-        updateShadowBounds();
-        ViewCompat.postInvalidateOnAnimation(this);
-    }
 
     public void setShadowVisible(boolean shadowVisible, boolean animate) {
         this.mShadowVisible = shadowVisible;
@@ -106,17 +113,7 @@ public class DrawShadowFrameLayout extends FrameLayout {
         setWillNotDraw(!mShadowVisible || mShadowDrawable == null);
     }
 
-    private static Property<DrawShadowFrameLayout, Float> SHADOW_ALPHA
-            = new Property<DrawShadowFrameLayout, Float>(Float.class, "shadowAlpha") {
-        @Override
-        public Float get(DrawShadowFrameLayout dsfl) {
-            return dsfl.mAlpha;
-        }
-
-        @Override
-        public void set(DrawShadowFrameLayout dsfl, Float value) {
-            dsfl.mAlpha = value;
-            ViewCompat.postInvalidateOnAnimation(dsfl);
-        }
-    };
+    public int getShadowElevation() {
+        return mShadowElevation;
+    }
 }
