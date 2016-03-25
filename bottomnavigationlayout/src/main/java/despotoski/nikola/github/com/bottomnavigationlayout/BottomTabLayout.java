@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.MenuRes;
@@ -28,6 +29,8 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     static final float MAX_ITEM_WIDTH = 168f;
     private static final int MAX_BOTTOM_NAVIGATION_ITEMS = 5;
     private static final int MIN_BOTTOM_NAVIGATION_ITEMS = 3;
+    private int[] mParentBackgroundColors;
+    private int mParentBackgroundColorsResId;
     private View mRevealOverlayView;
     private LinearLayoutCompat mContainer;
     private int mBottomTabMenuResId;
@@ -70,11 +73,15 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
                 R.styleable.BottomNavigationTabLayout);
         mActiveColorFilter = a.getResourceId(R.styleable.BottomNavigationTabLayout_activeColorFilter, View.NO_ID);
         mBottomTabMenuResId = a.getResourceId(R.styleable.BottomNavigationTabLayout_bottomTabsMenu, View.NO_ID);
+        if (mBottomTabMenuResId != View.NO_ID) {
+            mParentBackgroundColorsResId = a.getResourceId(R.styleable.BottomNavigationTabLayout_bottomTabsMenuParentBackgroundColors, View.NO_ID);
+            mParentBackgroundColors = getResources().getIntArray(mParentBackgroundColorsResId);
+        }
         mMaxItemWidth = (int) getResources().getDimension(R.dimen.bottom_navigation_max_width);
         mMinBottomItemWidth = (int) getResources().getDimension(R.dimen.bottom_navigation_min_width);
         mContainer.setOrientation(LinearLayoutCompat.HORIZONTAL);
         mContainer.setGravity(Gravity.CENTER | Gravity.CENTER_HORIZONTAL);
-        setBottomTabs(mBottomTabMenuResId);
+        setBottomTabs(mBottomTabMenuResId, mParentBackgroundColors);
         Util.runOnAttachedToLayout(this, new Runnable() {
             @Override
             public void run() {
@@ -162,31 +169,39 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         return mContainer.getMeasuredWidth() / mContainer.getChildCount();
     }
 
-    public void setBottomTabs(@MenuRes int menuResId) {
+    public void setBottomTabs(@MenuRes int menuResId, int[] parentBackgroundColors) {
         if (menuResId != View.NO_ID) {
             MenuBuilder menuBuilder = new MenuBuilder(getContext());
             ((Activity) getContext()).getMenuInflater().inflate(menuResId, menuBuilder);
+            if (menuBuilder.size() != parentBackgroundColors.length) {
+                throw new IllegalArgumentException("The number of menu items should be equal to the number of parent backgrounds. Make sure you are using both attributes.");
+            }
             checkBottomItemGuidelines(menuBuilder.size());
-            populateFromMenuResource(menuBuilder);
+            populateFromMenuResource(menuBuilder, parentBackgroundColors);
         }
     }
 
-    public void populateFromMenuResource(@NonNull MenuBuilder menuBuilder) {
+    public void populateFromMenuResource(@NonNull MenuBuilder menuBuilder, @NonNull int[] parentBackgroundColors) {
         removeAllTabs();
         int size = menuBuilder.size();
         checkBottomItemGuidelines(size);
         for (int i = 0; i < size; i++) {
             MenuItem item = menuBuilder.getItem(i);
-            newBottomTab(item);
+            newBottomTab(item, parentBackgroundColors[i]);
         }
     }
 
-    private void newBottomTab(MenuItem item) {
-        //addBottomNavigationItem(BottomNavigationItemBuilder.create(item.getIcon() , item.getTitle(), mParent));
+    private void newBottomTab(MenuItem item, int parentBackgroundColor) {
+        addBottomNavigationItem(BottomNavigationItemBuilder.create(item.getIcon(), String.valueOf(item.getTitle()), parentBackgroundColor));
+    }
+
+    private void addBottomNavigationItem(BottomNavigationItem bottomNavigationItem) {
+
     }
 
     public void setSelectedItemPosition(int selectedItemPosition) {
         mSelectedItemPosition = selectedItemPosition;
+        updateBottomNavViews();
     }
 
     private void removeAllTabs() {
@@ -202,7 +217,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     }
 
     public void populateBottomTabItems(@NonNull BottomTabsBuilder builder) {
-        if (getChildCount() >= MIN_BOTTOM_NAVIGATION_ITEMS) {
+        if (mContainer.getChildCount() >= MIN_BOTTOM_NAVIGATION_ITEMS) {
             checkBottomItemGuidelines(getChildCount());
         }
         List<BottomNavigationItem> build = builder.build();
@@ -221,7 +236,17 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     @Override
     protected Parcelable onSaveInstanceState() {
-        return super.onSaveInstanceState();
+        SavedState savedState = new SavedState(super.onSaveInstanceState());
+        savedState.selectedPosition = mSelectedItemPosition;
+        return savedState;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(state);
+        if (state instanceof SavedState) {
+            mSelectedItemPosition = ((SavedState) state).selectedPosition;
+        }
     }
 
     private void selectTabView() {
@@ -279,6 +304,37 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
             validate();
             return mNavItems;
         }
+    }
+
+
+    static class SavedState extends BaseSavedState {
+        int selectedPosition;
+
+        SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            this.selectedPosition = in.readInt();
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeInt(this.selectedPosition);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
+
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
     }
 }
 

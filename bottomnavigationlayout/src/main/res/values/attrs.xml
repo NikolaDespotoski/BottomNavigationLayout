@@ -6,5 +6,6 @@
     <declare-styleable name="BottomNavigationTabLayout">
         <attr name="activeColorFilter" format="color"></attr>
         <attr name="bottomTabsMenu" format="reference"></attr>
+        <attr name="bottomTabsMenuParentBackgroundColors" format="reference"></attr>
     </declare-styleable>
 </resources>

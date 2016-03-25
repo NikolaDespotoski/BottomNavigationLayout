@@ -1,6 +1,7 @@
 package despotoski.nikola.github.com.bottomnavigationlayout;
 
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -29,7 +30,7 @@ public class BottomNavigationItemBuilder {
         return new BottomNavigationItem(mIcon, mText, parentColorBackground);
     }
 
-    public static BottomNavigationItem create(@NonNull Drawable icon, @NonNull String text, int parentColorBackground) {
+    public static BottomNavigationItem create(@NonNull Drawable icon, @NonNull String text, @ColorInt int parentColorBackground) {
         return new BottomNavigationItem(icon, text, parentColorBackground);
     }
 }
