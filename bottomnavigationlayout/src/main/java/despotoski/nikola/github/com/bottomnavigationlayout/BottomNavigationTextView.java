@@ -20,6 +20,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -73,6 +74,7 @@ public class BottomNavigationTextView extends TextView {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public BottomNavigationTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        invalidate();
     }
 
     public BottomNavigationTextView(Context context, BottomNavigationItem bottomNavigationItem) {
@@ -96,6 +98,9 @@ public class BottomNavigationTextView extends TextView {
         setTextIsSelectable(false);
         setText(mText);
         setTextColor(Color.WHITE);
+        setSingleLine(true);
+        setMaxLines(1);
+        setEllipsize(TextUtils.TruncateAt.END);
         mInactiveTextColor = getCurrentTextColor();
         if (mTopDrawable == null) {
             mTopDrawable = ContextCompat.getDrawable(getContext(), mIcon);

@@ -81,10 +81,11 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         setupContainer();
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BottomNavigationTabLayout);
-        mActiveColorFilter = a.getResourceId(R.styleable.BottomNavigationTabLayout_activeColorFilter, View.NO_ID);
-        mBottomTabMenuResId = a.getResourceId(R.styleable.BottomNavigationTabLayout_bottomTabsMenu, View.NO_ID);
+        mShiftingMode = a.getBoolean(R.styleable.BottomNavigationTabLayout_shift_mode, false);
+        mActiveColorFilter = a.getResourceId(R.styleable.BottomNavigationTabLayout_active_item_color_filter, View.NO_ID);
+        mBottomTabMenuResId = a.getResourceId(R.styleable.BottomNavigationTabLayout_bottom_tabs_menu, View.NO_ID);
         if (mBottomTabMenuResId != View.NO_ID) {
-            mParentBackgroundColorsResId = a.getResourceId(R.styleable.BottomNavigationTabLayout_bottomTabsMenuParentBackgroundColors, View.NO_ID);
+            mParentBackgroundColorsResId = a.getResourceId(R.styleable.BottomNavigationTabLayout_bottom_tabs_menu_parent_background_colors, View.NO_ID);
             mParentBackgroundColors = getResources().getIntArray(mParentBackgroundColorsResId);
         }
         mMaxItemWidth = (int) getResources().getDimension(R.dimen.bottom_navigation_max_width);
@@ -201,6 +202,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
             bottomNavigationItem.setPosition(i);
             addBottomNavigationItem(bottomNavigationItem);
         }
+        updateBottomNavViews();
     }
 
 
