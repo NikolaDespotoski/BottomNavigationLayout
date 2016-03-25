@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.os.Parcelable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 @CoordinatorLayout.DefaultBehavior(BottomNavigationBehavior.class)
 public class BottomTabLayout extends DrawShadowFrameLayout {
-    private static final float MAX_ITEM_WIDTH = 168f;
+    static final float MAX_ITEM_WIDTH = 168f;
     private static final int MAX_BOTTOM_NAVIGATION_ITEMS = 5;
     private static final int MIN_BOTTOM_NAVIGATION_ITEMS = 3;
     private View mRevealOverlayView;
@@ -217,9 +218,14 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         selectTabView();
     }
 
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        return super.onSaveInstanceState();
+    }
+
     private void selectTabView() {
         if (mSelectedItemPosition == View.NO_ID) {
-            mSelectedItemPosition = 1;
+            mSelectedItemPosition = 0;
         }
         BottomNavigationTextView bottomNavigationTextView = mBottomTabViews.get(mSelectedItemPosition);
         bottomNavigationTextView.requestFocus();
@@ -228,7 +234,6 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     }
 
-    @NonNull
     final View getRevealOverlayView() {
         return mRevealOverlayView;
     }

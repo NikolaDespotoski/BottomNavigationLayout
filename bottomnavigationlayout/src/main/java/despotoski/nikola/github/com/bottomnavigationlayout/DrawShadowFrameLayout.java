@@ -50,9 +50,6 @@ public class DrawShadowFrameLayout extends FrameLayout {
         mShadowDrawable = ContextCompat.getDrawable(getContext(), R.drawable.shadow);
         if (mShadowDrawable != null) {
             mShadowDrawable.setCallback(this);
-            if (mShadowDrawable instanceof NinePatchDrawable) {
-                mShadowNinePatchDrawable = (NinePatchDrawable) mShadowDrawable;
-            }
         }
 
         setWillNotDraw(false);
@@ -69,7 +66,7 @@ public class DrawShadowFrameLayout extends FrameLayout {
 
     private void updateShadowBounds() {
         if (mShadowDrawable != null) {
-            mShadowDrawable.setBounds(0, mShadowTopOffset, mWidth, mHeight);
+            mShadowDrawable.setBounds(0, 0, mWidth, mShadowDrawable.getIntrinsicHeight());
         }
     }
 
