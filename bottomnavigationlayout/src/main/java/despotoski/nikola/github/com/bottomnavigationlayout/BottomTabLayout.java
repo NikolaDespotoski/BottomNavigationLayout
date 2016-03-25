@@ -123,7 +123,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     private static void checkBottomItemGuidelines(int count) {
         if (count < MIN_BOTTOM_NAVIGATION_ITEMS || count > MAX_BOTTOM_NAVIGATION_ITEMS) {
-            throw new IllegalArgumentException("Number of bottom navigation items should between 3 and 5, count: " + count + " if you are using with ViewPager, Dont! ");
+            throw new IllegalArgumentException("Number of bottom navigation items should between 3 and 5, count: " + count);
         }
     }
 
