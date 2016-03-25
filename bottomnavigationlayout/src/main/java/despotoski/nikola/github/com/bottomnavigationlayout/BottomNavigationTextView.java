@@ -54,7 +54,6 @@ public final class BottomNavigationTextView extends TextView {
 
     private static final float ACTIVE_TEXT_SIZE = 14;
     private static final float INACTIVE_TEXT_SIZE = 12;
-    private static final TypeEvaluator ARGB_EVALUATOR = new ArgbEvaluator();
     private static final TypeEvaluator FLOAT_EVALUATOR = new FloatEvaluator();
     private static final TypeEvaluator INT_EVALUATOR = new IntEvaluator();
     private String mText;
@@ -72,6 +71,7 @@ public final class BottomNavigationTextView extends TextView {
     private int mInactiveWidth;
     private int mInactiveTextColor;
     private final RevealViewAnimator mRevealViewImpl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? new KitkatRevealViewAnimatorImpl() : new PreKitkatRevealViewImpl();
+    private final AnimatorCompat mSelectionAnimator = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? new NewEraAnimator() : new PreHistoricAnimator();
 
     public BottomNavigationTextView(Context context) {
         super(context);
@@ -216,53 +216,7 @@ public final class BottomNavigationTextView extends TextView {
     }
 
     private void animateSelection(float textSize, float targetTextSize) {
-        boolean isAlwaysTextShown = ((ViewGroup) getParent()).getChildCount() == 3;
-        int paddingStart = getInactivePadding();
-        int paddingEnd = mViewTopPaddingActive;
-        if (!isSelected()) {
-            int temp = paddingEnd;
-            paddingEnd = paddingStart;
-            paddingStart = temp;
-        }
-        startParentBackgroundColorAnimator();
-        ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
-                PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
-                PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize));
-        mShiftingMode = mShiftingMode && !isAlwaysTextShown;
-        if (isAlwaysTextShown && !mShiftingMode) {
-            objectAnimator.start();
-            return;
-        }
-        int alphaStart = 0;
-        int alphaEnd = 255;
-        if (!isSelected()) {
-            int a = alphaEnd;
-            alphaEnd = alphaStart;
-            alphaStart = a;
-        }
-        objectAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
-                PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
-                PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize),
-                PropertyValuesHolder.ofInt(Properties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd));
-        if (!mShiftingMode) {
-            objectAnimator.start();
-            return;
-        }
-        ensureInactiveViewWidth();
-        int widthStart = mInactiveWidth;
-        int widthEnd = mInactiveWidth + mActiveViewWidth;
-        if (!isSelected()) {
-            int a = widthEnd;
-            widthEnd = widthStart;
-            widthStart = a;
-        }
-        objectAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
-                PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
-                PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize),
-                PropertyValuesHolder.ofInt(Properties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd),
-                PropertyValuesHolder.ofInt(Properties.VIEW_WIDTH, widthStart, widthEnd));
-        objectAnimator.start();
-
+        mSelectionAnimator.animateSelection(textSize, targetTextSize);
     }
 
     private void ensureInactiveViewWidth() {
@@ -309,7 +263,118 @@ public final class BottomNavigationTextView extends TextView {
         void animateBackground();
     }
 
+    private interface AnimatorCompat {
+        void animateSelection(float textSize, float targetSize);
+    }
+
+    private class NewEraAnimator implements AnimatorCompat {
+
+        @Override
+        public void animateSelection(float textSize, float targetTextSize) {
+            boolean isAlwaysTextShown = ((ViewGroup) getParent()).getChildCount() == 3;
+            int paddingStart = getInactivePadding();
+            int paddingEnd = mViewTopPaddingActive;
+            if (!isSelected()) {
+                int temp = paddingEnd;
+                paddingEnd = paddingStart;
+                paddingStart = temp;
+            }
+            startParentBackgroundColorAnimator();
+            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
+                    PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
+                    PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize));
+            mShiftingMode = mShiftingMode && !isAlwaysTextShown;
+            if (isAlwaysTextShown && !mShiftingMode) {
+                objectAnimator.start();
+                return;
+            }
+            int alphaStart = 0;
+            int alphaEnd = 255;
+            if (!isSelected()) {
+                int a = alphaEnd;
+                alphaEnd = alphaStart;
+                alphaStart = a;
+            }
+            objectAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
+                    PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
+                    PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize),
+                    PropertyValuesHolder.ofInt(Properties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd));
+            if (!mShiftingMode) {
+                objectAnimator.start();
+                return;
+            }
+            ensureInactiveViewWidth();
+            int widthStart = mInactiveWidth;
+            int widthEnd = mInactiveWidth + mActiveViewWidth;
+            if (!isSelected()) {
+                int a = widthEnd;
+                widthEnd = widthStart;
+                widthStart = a;
+            }
+            objectAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
+                    PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
+                    PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize),
+                    PropertyValuesHolder.ofInt(Properties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd),
+                    PropertyValuesHolder.ofInt(Properties.VIEW_WIDTH, widthStart, widthEnd));
+            objectAnimator.start();
+        }
+    }
+
+    private class PreHistoricAnimator implements AnimatorCompat {
+
+        @Override
+        public void animateSelection(float textSize, float targetTextSize) {
+            boolean isAlwaysTextShown = ((ViewGroup) getParent()).getChildCount() == 3;
+            int paddingStart = getInactivePadding();
+            int paddingEnd = mViewTopPaddingActive;
+            if (!isSelected()) {
+                int temp = paddingEnd;
+                paddingEnd = paddingStart;
+                paddingStart = temp;
+            }
+            startParentBackgroundColorAnimator();
+            com.nineoldandroids.animation.ObjectAnimator objectAnimator = com.nineoldandroids.animation.ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
+                    com.nineoldandroids.animation.PropertyValuesHolder.ofInt(PrehistoricProperties.PADDING_TOP, paddingStart, paddingEnd),
+                    com.nineoldandroids.animation.PropertyValuesHolder.ofFloat(PrehistoricProperties.TEXT_SIZE, textSize, targetTextSize));
+            mShiftingMode = mShiftingMode && !isAlwaysTextShown;
+            if (isAlwaysTextShown && !mShiftingMode) {
+                objectAnimator.start();
+                return;
+            }
+            int alphaStart = 0;
+            int alphaEnd = 255;
+            if (!isSelected()) {
+                int a = alphaEnd;
+                alphaEnd = alphaStart;
+                alphaStart = a;
+            }
+            objectAnimator = com.nineoldandroids.animation.ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
+                    com.nineoldandroids.animation.PropertyValuesHolder.ofInt(PrehistoricProperties.PADDING_TOP, paddingStart, paddingEnd),
+                    com.nineoldandroids.animation.PropertyValuesHolder.ofFloat(PrehistoricProperties.TEXT_SIZE, textSize, targetTextSize),
+                    com.nineoldandroids.animation.PropertyValuesHolder.ofInt(PrehistoricProperties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd));
+            if (!mShiftingMode) {
+                objectAnimator.start();
+                return;
+            }
+            ensureInactiveViewWidth();
+            int widthStart = mInactiveWidth;
+            int widthEnd = mInactiveWidth + mActiveViewWidth;
+            if (!isSelected()) {
+                int a = widthEnd;
+                widthEnd = widthStart;
+                widthStart = a;
+            }
+            objectAnimator = com.nineoldandroids.animation.ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
+                    com.nineoldandroids.animation.PropertyValuesHolder.ofInt(PrehistoricProperties.PADDING_TOP, paddingStart, paddingEnd),
+                    com.nineoldandroids.animation.PropertyValuesHolder.ofFloat(PrehistoricProperties.TEXT_SIZE, textSize, targetTextSize),
+                    com.nineoldandroids.animation.PropertyValuesHolder.ofInt(PrehistoricProperties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd),
+                    com.nineoldandroids.animation.PropertyValuesHolder.ofInt(PrehistoricProperties.VIEW_WIDTH, widthStart, widthEnd));
+            objectAnimator.start();
+        }
+    }
+
     private class KitkatRevealViewAnimatorImpl implements RevealViewAnimator {
+        private final TypeEvaluator ARGB_EVALUATOR = new ArgbEvaluator();
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
@@ -344,8 +409,29 @@ public final class BottomNavigationTextView extends TextView {
         }
     }
 
+    private class PrehistoricRevealViewImpl implements RevealViewAnimator {
+
+        private final com.nineoldandroids.animation.TypeEvaluator ARGB_EVALUATOR_COMPAT = new com.nineoldandroids.animation.ArgbEvaluator();
+
+        @Override
+        public void animateBackground() {
+            final BottomTabLayout topParent = (BottomTabLayout) getParent().getParent();
+            final View revealView = topParent.getRevealOverlayView();
+            final ColorDrawable color = getColorDrawable(revealView);
+            com.nineoldandroids.animation.ValueAnimator rgb = com.nineoldandroids.animation.ObjectAnimator.ofInt(color.getColor(), mParentBackgroundColor);
+            rgb.setEvaluator(ARGB_EVALUATOR_COMPAT);
+            rgb.addUpdateListener(new com.nineoldandroids.animation.ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(com.nineoldandroids.animation.ValueAnimator a) {
+                    DrawableCompat.setTint(color, (Integer) a.getAnimatedValue());
+                }
+            });
+        }
+    }
 
     private class PreKitkatRevealViewImpl implements RevealViewAnimator {
+        private final TypeEvaluator ARGB_EVALUATOR = new ArgbEvaluator();
+
         @Override
         public void animateBackground() {
             final BottomTabLayout topParent = (BottomTabLayout) getParent();
@@ -361,4 +447,6 @@ public final class BottomNavigationTextView extends TextView {
             rgb.start();
         }
     }
+
+
 }
