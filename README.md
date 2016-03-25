@@ -26,6 +26,7 @@ Add this library to your module gradle dependencies:
   android:layout_height="wrap_content"
   android:layout_gravity="bottom"
   android:background="?attr/selectableItemBackgroundBorderless"
+  app:inactive_item_text_color="@color/colorPrimary"
   app:active_item_color_filter="@android:color/holo_red_dark"
   app:bottom_tabs_menu="@menu/bottom_navigation_items"
   app:bottom_tabs_menu_parent_background_colors="@array/menu_background_colors"/>
