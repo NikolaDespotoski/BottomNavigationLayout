@@ -59,7 +59,6 @@ public class DrawShadowFrameLayout extends FrameLayout {
     private void updateShadowBounds() {
         if (mShadowDrawable != null) {
             mShadowDrawable.setBounds(0, 0, mWidth, mShadowElevation);
-            getBackground().setBounds(0, mShadowDrawable.getIntrinsicHeight(), mWidth, mHeight);
             ViewCompat.postInvalidateOnAnimation(this);
         }
     }
@@ -73,6 +72,7 @@ public class DrawShadowFrameLayout extends FrameLayout {
     public void draw(Canvas canvas) {
         super.draw(canvas);
         if (mShadowDrawable != null) {
+            getBackground().setBounds(0, mShadowDrawable.getBounds().bottom, mWidth, mHeight);
             mShadowDrawable.draw(canvas);
         }
     }
