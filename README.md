@@ -2,6 +2,8 @@
 
 Simple lightweight library that works out of the box implementing [Bottom navigation component of Material Design guidelines](https://www.google.com/design/spec/components/bottom-navigation.html)
 
+(http://i.imgur.com/uQjIy1O.webm)
+
 # Usage 
 1. Add jitpack.io to your project gradle:
 ```
