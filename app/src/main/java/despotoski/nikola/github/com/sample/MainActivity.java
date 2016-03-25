@@ -5,20 +5,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import despotoski.nikola.github.com.bottomnavigationlayout.BottomNavigationItem;
+import despotoski.nikola.github.com.bottomnavigationlayout.BottomNavigationItemBuilder;
 import despotoski.nikola.github.com.bottomnavigationlayout.BottomTabLayout;
 import despotoski.nikola.github.com.bottomnavigationlayout.sample.R;
 
 public class MainActivity extends AppCompatActivity implements BottomTabLayout.OnNavigationItemSelectionListener {
     private static final String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomTabLayout tabLayout = (BottomTabLayout) findViewById(R.id.tabs);
         tabLayout.setOnNavigationItemSelectionListener(this);
-        tabLayout.setShiftingMode(true);
+        tabLayout.setShiftingMode(false);
         tabLayout.setActiveItemColorResource(R.color.active_color);
-        /*BottomTabLayout.BottomTabsBuilder builder = new BottomTabLayout.BottomTabsBuilder();
+        BottomTabLayout.BottomTabsBuilder builder = new BottomTabLayout.BottomTabsBuilder();
         builder.addBottomNavigationItem(
                 new BottomNavigationItemBuilder()
                         .setText("Text 1")
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements BottomTabLayout.O
                         .setIcon(R.drawable.ic_favorite_white_24dp)
                         .setParentColorBackground(android.R.color.holo_blue_dark)
                         .build());
-        builder.addBottomNavigationItem(
+        /*builder.addBottomNavigationItem(
                 new BottomNavigationItemBuilder()
                         .setText("Text 4")
                         .setIcon(R.drawable.ic_place_white_24dp)

@@ -5,6 +5,7 @@
     </declare-styleable>
     <declare-styleable name="BottomNavigationTabLayout">
         <attr name="active_item_color_filter" format="color"/>
+        <attr name="inactive_item_text_color" format="color"/>
         <attr name="bottom_tabs_menu" format="reference"/>
         <attr name="shift_mode" format="boolean"/>
         <attr name="bottom_tabs_menu_parent_background_colors" format="reference"/>

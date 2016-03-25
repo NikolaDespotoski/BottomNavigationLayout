@@ -115,11 +115,10 @@ public class BottomNavigationTextView extends TextView {
         setGravity(Gravity.CENTER);
         setTextIsSelectable(false);
         setText(mText);
-        setTextColor(Color.WHITE);
+        setTextColor(mInactiveTextColor);
         setSingleLine(true);
         setMaxLines(1);
         setEllipsize(TextUtils.TruncateAt.END);
-        mInactiveTextColor = getCurrentTextColor();
         if (mTopDrawable == null) {
             mTopDrawable = ContextCompat.getDrawable(getContext(), mIcon);
         }
@@ -289,6 +288,22 @@ public class BottomNavigationTextView extends TextView {
 
     private ColorDrawable getColorDrawable(View view) {
         return view.getBackground() != null ? ((ColorDrawable) view.getBackground()) : new ColorDrawable(Color.WHITE);
+    }
+
+    public void setInactiveTextColorResource(@ColorRes  int inactiveTextColor) {
+        this.mInactiveTextColor = ContextCompat.getColor(getContext(), inactiveTextColor);
+    }
+
+    public void setInactiveTextColor(@ColorInt  int inactiveTextColor) {
+        this.mInactiveTextColor = inactiveTextColor;
+    }
+
+    public int getmInactiveTextColor() {
+        return mInactiveTextColor;
+    }
+
+    public void setmInactiveTextColor(int mInactiveTextColor) {
+        this.mInactiveTextColor = mInactiveTextColor;
     }
 
 

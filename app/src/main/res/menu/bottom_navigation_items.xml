@@ -3,20 +3,22 @@
     <item
         android:id="@+id/id1"
         android:icon="@drawable/ic_android_white_24dp"
-        android:title="Sample"></item>
+        android:title="Item 1"></item>
     <item
         android:id="@+id/id2"
         android:icon="@drawable/ic_place_white_24dp"
-        android:title="Navigation"></item>
+        android:title="Item 2"></item>
 
     <item
         android:id="@+id/id3"
         android:icon="@drawable/ic_favorite_white_24dp"
-        android:title="Bottom"></item>
+        android:title="Item 3"></item>
 
+<!--
     <item
         android:id="@+id/id4"
         android:icon="@drawable/ic_favorite_white_24dp"
-        android:title="Tab"></item>
+        android:title="Item 4"></item>
+-->
 
 </menu>

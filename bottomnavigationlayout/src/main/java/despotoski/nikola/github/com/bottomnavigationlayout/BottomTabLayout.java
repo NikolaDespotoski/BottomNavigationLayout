@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.ColorRes;
@@ -73,6 +74,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     private boolean mShiftingMode;
     private final List<BottomNavigationTextView> mBottomTabViews = new ArrayList<>(MAX_BOTTOM_NAVIGATION_ITEMS);
     private int mMaxItemWidth;
+    private int mInactiveTextColor;
 
     public BottomTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -98,6 +100,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BottomNavigationTabLayout);
         mShiftingMode = a.getBoolean(R.styleable.BottomNavigationTabLayout_shift_mode, false);
+        mInactiveTextColor = a.getColor(R.styleable.BottomNavigationTabLayout_inactive_item_text_color, Color.WHITE);
         mActiveColorFilter = a.getResourceId(R.styleable.BottomNavigationTabLayout_active_item_color_filter, View.NO_ID);
         int bottomTabMenuResId = a.getResourceId(R.styleable.BottomNavigationTabLayout_bottom_tabs_menu, View.NO_ID);
         if (bottomTabMenuResId != View.NO_ID) {
@@ -165,6 +168,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
                 BottomNavigationTextView bottomView = (BottomNavigationTextView) childAt;
                 bottomView.setShiftingModeEnabled(mShiftingMode);
                 bottomView.setActiveColorResource(mActiveColorFilter);
+                bottomView.setInactiveTextColor(mInactiveTextColor);
 
             }
         }
@@ -224,6 +228,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     private void addBottomNavigationItem(BottomNavigationItem item) {
         BottomNavigationTextView bottomNavigationTextView = new BottomNavigationTextView(getContext(), item);
         bottomNavigationTextView.setActiveColor(mActiveColorFilter);
+        bottomNavigationTextView.setActiveColor(mInactiveTextColor);
         bottomNavigationTextView.setTag(item);
         mContainer.addView(bottomNavigationTextView, generateBottomItemLayoutParams());
         mBottomTabViews.add(bottomNavigationTextView);
