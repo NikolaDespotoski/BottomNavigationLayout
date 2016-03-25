@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements BottomTabLayout.O
         setContentView(R.layout.activity_main);
         BottomTabLayout tabLayout = (BottomTabLayout) findViewById(R.id.tabs);
         tabLayout.setOnNavigationItemSelectionListener(this);
-        tabLayout.setShiftingMode(false);
+        tabLayout.setShiftingMode(true);
         tabLayout.setActiveItemColorResource(R.color.active_color);
         BottomTabLayout.BottomTabsBuilder builder = new BottomTabLayout.BottomTabsBuilder();
         builder.addBottomNavigationItem(
@@ -39,19 +39,19 @@ public class MainActivity extends AppCompatActivity implements BottomTabLayout.O
                         .setIcon(R.drawable.ic_favorite_white_24dp)
                         .setParentColorBackground(android.R.color.holo_blue_dark)
                         .build());
-        /*builder.addBottomNavigationItem(
+        builder.addBottomNavigationItem(
                 new BottomNavigationItemBuilder()
                         .setText("Text 4")
                         .setIcon(R.drawable.ic_place_white_24dp)
                         .setParentColorBackground(android.R.color.holo_blue_bright)
                         .build());
-        builder.addBottomNavigationItem(
+        /*builder.addBottomNavigationItem(
                 new BottomNavigationItemBuilder()
                         .setText("Text 5")
                         .setIcon(R.drawable.ic_favorite_white_24dp)
                         .setParentColorBackground(android.R.color.holo_green_light)
-                        .build());
-        tabLayout.populateBottomTabItems(builder);*/
+                        .build()); */
+//        tabLayout.populateBottomTabItems(builder);
     }
 
     @Override

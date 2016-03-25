@@ -23,6 +23,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.animation.TimeInterpolator;
 import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
@@ -36,12 +37,14 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
 import android.widget.TextView;
 
 /**
@@ -52,6 +55,7 @@ public final class BottomNavigationTextView extends TextView {
 
     private static final float ACTIVE_TEXT_SIZE = 14;
     private static final float INACTIVE_TEXT_SIZE = 12;
+    private static final long ANIMATION_DURATION = 200;
     private String mText;
     private int mIcon;
     private int mParentBackgroundColor;
@@ -270,6 +274,8 @@ public final class BottomNavigationTextView extends TextView {
 
     private class NewEraAnimator implements AnimatorCompat {
 
+        private final TimeInterpolator INTERPOLATOR = new FastOutLinearInInterpolator();
+
         @Override
         public void animateSelection(float textSize, float targetTextSize) {
             boolean isAlwaysTextShown = ((ViewGroup) getParent()).getChildCount() == 3;
@@ -286,7 +292,7 @@ public final class BottomNavigationTextView extends TextView {
                     PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize));
             mShiftingMode = mShiftingMode && !isAlwaysTextShown;
             if (isAlwaysTextShown && !mShiftingMode) {
-                objectAnimator.start();
+                startObjectAnimator(objectAnimator);
                 return;
             }
             int alphaStart = 0;
@@ -301,7 +307,7 @@ public final class BottomNavigationTextView extends TextView {
                     PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize),
                     PropertyValuesHolder.ofInt(Properties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd));
             if (!mShiftingMode) {
-                objectAnimator.start();
+                startObjectAnimator(objectAnimator);
                 return;
             }
             ensureInactiveViewWidth();
@@ -317,12 +323,18 @@ public final class BottomNavigationTextView extends TextView {
                     PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize),
                     PropertyValuesHolder.ofInt(Properties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd),
                     PropertyValuesHolder.ofInt(Properties.VIEW_WIDTH, widthStart, widthEnd));
+            startObjectAnimator(objectAnimator);
+        }
+
+        private void startObjectAnimator(ObjectAnimator objectAnimator) {
+            objectAnimator.setInterpolator(INTERPOLATOR);
+            objectAnimator.setDuration(ANIMATION_DURATION);
             objectAnimator.start();
         }
     }
 
     private class PreHistoricAnimator implements AnimatorCompat {
-
+        private final Interpolator INTERPOLATOR = new FastOutLinearInInterpolator();
         @Override
         public void animateSelection(float textSize, float targetTextSize) {
             boolean isAlwaysTextShown = ((ViewGroup) getParent()).getChildCount() == 3;
@@ -339,6 +351,7 @@ public final class BottomNavigationTextView extends TextView {
                     com.nineoldandroids.animation.PropertyValuesHolder.ofFloat(PrehistoricProperties.TEXT_SIZE, textSize, targetTextSize));
             mShiftingMode = mShiftingMode && !isAlwaysTextShown;
             if (isAlwaysTextShown && !mShiftingMode) {
+                objectAnimator.setDuration(ANIMATION_DURATION);
                 objectAnimator.start();
                 return;
             }
@@ -354,7 +367,7 @@ public final class BottomNavigationTextView extends TextView {
                     com.nineoldandroids.animation.PropertyValuesHolder.ofFloat(PrehistoricProperties.TEXT_SIZE, textSize, targetTextSize),
                     com.nineoldandroids.animation.PropertyValuesHolder.ofInt(PrehistoricProperties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd));
             if (!mShiftingMode) {
-                objectAnimator.start();
+                startObjectAnimator(objectAnimator);
                 return;
             }
             ensureInactiveViewWidth();
@@ -370,6 +383,13 @@ public final class BottomNavigationTextView extends TextView {
                     com.nineoldandroids.animation.PropertyValuesHolder.ofFloat(PrehistoricProperties.TEXT_SIZE, textSize, targetTextSize),
                     com.nineoldandroids.animation.PropertyValuesHolder.ofInt(PrehistoricProperties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd),
                     com.nineoldandroids.animation.PropertyValuesHolder.ofInt(PrehistoricProperties.VIEW_WIDTH, widthStart, widthEnd));
+            objectAnimator.setDuration(ANIMATION_DURATION);
+            objectAnimator.setInterpolator(new FastOutLinearInInterpolator());
+            objectAnimator.start();
+        }
+        private void startObjectAnimator(com.nineoldandroids.animation.ObjectAnimator objectAnimator) {
+            objectAnimator.setInterpolator(INTERPOLATOR);
+            objectAnimator.setDuration(ANIMATION_DURATION);
             objectAnimator.start();
         }
     }
