@@ -17,7 +17,7 @@ Add this library to your module gradle dependencies:
 ```
  compile 'com.github.NikolaDespotoski:BottomNavigationLayout:0.3'
 ```
-1. In xml layout resource
+2. In xml layout resource
 
 ```
 <despotoski.nikola.github.com.bottomnavigationlayout.BottomTabLayout
@@ -34,7 +34,7 @@ Add this library to your module gradle dependencies:
         
 
 
-2. Programatically:
+3. Programatically:
 
 ```
  BottomTabLayout tabLayout = (BottomTabLayout) findViewById(R.id.tabs);
