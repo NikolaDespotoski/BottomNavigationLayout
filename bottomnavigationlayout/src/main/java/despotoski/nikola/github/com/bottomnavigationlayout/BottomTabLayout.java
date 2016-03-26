@@ -199,6 +199,9 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         return new LinearLayoutCompat.LayoutParams(mMinBottomItemWidth, (int) getResources().getDimension(R.dimen.bottom_navigation_height));
     }
 
+
+
+
     private boolean isLandscape() {
         return getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }

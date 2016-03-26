@@ -77,6 +77,7 @@ public final class BottomNavigationTextView extends TextView {
     private final AnimatorCompat mSelectionAnimator =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
                     new NewEraAnimator() : new PreHistoricAnimator();
+    private float mOriginalTextSize;
 
     public BottomNavigationTextView(Context context) {
         super(context);
@@ -126,7 +127,7 @@ public final class BottomNavigationTextView extends TextView {
         if (mTopDrawable == null) {
             mTopDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), mIcon));
         }
-
+        mOriginalTextSize = getTextSize();
         setCompoundDrawablesWithIntrinsicBounds(null, mTopDrawable, null, null);
         setCompoundDrawablePadding(0);
         Util.runOnAttachedToLayout(this, new Runnable() {
@@ -160,9 +161,9 @@ public final class BottomNavigationTextView extends TextView {
     }
 
     private int getInactivePadding() {
-        boolean isAlwaysTextShown = isTextAlwaysShown();
+        boolean isAlwaysTextShown = ((ViewGroup) getParent()).getChildCount() == 3;
         return !isAlwaysTextShown ?
-                (int) ((mViewTopPaddingInactive))
+                (int) ((mViewTopPaddingInactive) + (mOriginalTextSize / 2))
                 : mViewTopPaddingInactive;
     }
 
