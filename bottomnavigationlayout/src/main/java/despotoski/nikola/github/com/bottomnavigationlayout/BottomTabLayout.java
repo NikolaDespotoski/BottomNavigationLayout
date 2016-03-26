@@ -180,7 +180,6 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         for (int i = mContainer.getChildCount() - 1; i >= 0; i--) {
             View childAt = mContainer.getChildAt(i);
             childAt.setLayoutParams(generateBottomItemLayoutParams());
-            childAt.requestLayout();
             childAt.setOnClickListener(mBottomTabSelectionClickListener);
             if (childAt instanceof BottomNavigationTextView) {
                 BottomNavigationTextView bottomView = (BottomNavigationTextView) childAt;
@@ -229,7 +228,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         }
     }
 
-    public void populateFromMenuResource(@NonNull MenuBuilder menuBuilder, @NonNull int[] parentBackgroundColors) {
+   private void populateFromMenuResource(@NonNull MenuBuilder menuBuilder, @NonNull int[] parentBackgroundColors) {
         removeAllTabs();
         int size = menuBuilder.size();
         checkBottomItemGuidelines(size);
