@@ -38,23 +38,19 @@ import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 /**
  * Created by Nikola on 3/23/2016.
  */
-public final class BottomNavigationTextView extends TextView implements BottomNavigation{
+public final class BottomTabletNavigationTextView extends ImageView implements BottomNavigation{
 
 
-    private static final float ACTIVE_TEXT_SIZE = 14;
-    private static final float INACTIVE_TEXT_SIZE = 12;
     private static final long ANIMATION_DURATION = 200;
     private String mText;
     private int mIcon;
@@ -70,39 +66,39 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
     private int mInactiveTextColor;
     private final RevealViewAnimator mRevealViewImpl =
             Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT ?
-            new LollipopRevealViewAnimator() :
+                    new LollipopRevealViewAnimator() :
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
-                    new PreKitkatRevealViewImpl() :
-                    new PrehistoricRevealViewImpl();
+                            new PreKitkatRevealViewImpl() :
+                            new PrehistoricRevealViewImpl();
     private final AnimatorCompat mSelectionAnimator =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
                     new NewEraAnimator() : new PreHistoricAnimator();
-    private float mOriginalTextSize;
     private boolean isTablet;
+    private int mTabletLeftPadding;
 
-    public BottomNavigationTextView(Context context) {
+    public BottomTabletNavigationTextView(Context context) {
         super(context);
         initialize();
     }
 
-    public BottomNavigationTextView(Context context, AttributeSet attrs) {
+    public BottomTabletNavigationTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize();
 
     }
 
-    public BottomNavigationTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BottomTabletNavigationTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public BottomNavigationTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public BottomTabletNavigationTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         invalidate();
     }
 
-    public BottomNavigationTextView(Context context, BottomNavigationItem bottomNavigationItem) {
+    public BottomTabletNavigationTextView(Context context, BottomNavigationItem bottomNavigationItem) {
         super(context);
         mParentBackgroundColor = bottomNavigationItem.getParentBackgroundColorResource() != View.NO_ID ?
                 ContextCompat.getColor(getContext(), bottomNavigationItem.getParentBackgroundColorResource()) : bottomNavigationItem.getParentColorBackgroundColor();
@@ -115,34 +111,25 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
 
     private void initialize() {
         setRipple();
+        mTabletLeftPadding = (int)getResources().getDimension(R.dimen.bottom_navigation_left_padding);
         mViewTopPaddingInactive = (int) getResources().getDimension(R.dimen.bottom_navigation_icon_padding_inactive);
         mViewTopPaddingActive = (int) getResources().getDimension(R.dimen.bottom_navigation_icon_padding_active);
         mActiveViewWidth = (int) getResources().getDimension(R.dimen.bottom_navigation_width_active);
-        setGravity(Gravity.CENTER);
-        setTextIsSelectable(false);
-        setText(mText);
-        setTextColor(mInactiveTextColor);
-        setSingleLine(true);
-        setMaxLines(1);
-        setEllipsize(TextUtils.TruncateAt.END);
+        setScaleType(ScaleType.CENTER);
         if (mTopDrawable == null) {
             mTopDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), mIcon));
         }
-        mOriginalTextSize = getTextSize();
-        setCompoundDrawablesWithIntrinsicBounds(null, mTopDrawable, null, null);
-        setCompoundDrawablePadding(0);
+
         Util.runOnAttachedToLayout(this, new Runnable() {
             @Override
             public void run() {
-                setTextSize(getCurrentTextSize());
                 int paddingStart = getInactivePadding();
                 mInactiveWidth = getWidth();
-                setPadding(mViewTopPaddingActive * 2, paddingStart, mViewTopPaddingActive * 2, 0);
+                setPadding(mTabletLeftPadding, paddingStart, mViewTopPaddingActive * 2, mTabletLeftPadding);
                 previouslySelected = false;
                 setSelected(isSelected());
             }
         });
-        getPaint().setAlpha(255);
         postInvalidate();
     }
 
@@ -156,26 +143,14 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
         }
     }
 
-    private float getCurrentTextSize() {
-        boolean isAlwaysTextShown = isTextAlwaysShown();
-        return isAlwaysTextShown && isSelected() ? ACTIVE_TEXT_SIZE : isAlwaysTextShown && !isSelected() ? INACTIVE_TEXT_SIZE : 0;
-    }
 
     private int getInactivePadding() {
         boolean isAlwaysTextShown = ((ViewGroup) getParent()).getChildCount() == 3;
         return !isAlwaysTextShown ?
-                (int) ((mViewTopPaddingInactive) + (mOriginalTextSize / 2))
+                (int) ((mViewTopPaddingInactive))
                 : mViewTopPaddingInactive;
     }
 
-    private boolean isTextAlwaysShown() {
-        return ((ViewGroup) getParent()).getChildCount() == 3;
-    }
-
-    @Override
-    public void setTextIsSelectable(boolean selectable) {
-        super.setTextIsSelectable(false);
-    }
 
     @Override
     public void setSelected(boolean selected) {
@@ -183,21 +158,9 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
 
         boolean isAlwaysTextShown = ((ViewGroup) getParent()).getChildCount() == 3;
         if (selected && !previouslySelected) {
-            if (!isAlwaysTextShown) {
-                animateSelection(0, ACTIVE_TEXT_SIZE);
-                applyColorFilters();
-            } else {
-                animateSelection(INACTIVE_TEXT_SIZE, ACTIVE_TEXT_SIZE);
-                applyColorFilters();
-            }
+            applyColorFilters();
         } else if (!selected && previouslySelected) {
-            if (!isAlwaysTextShown) {
-                animateSelection(ACTIVE_TEXT_SIZE, 0);
-                applyColorFilters();
-            } else {
-                animateSelection(ACTIVE_TEXT_SIZE, INACTIVE_TEXT_SIZE);
-                applyColorFilters();
-            }
+            applyColorFilters();
         }
         previouslySelected = selected;
     }
@@ -205,12 +168,8 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
     private void applyColorFilters() {
         if (isSelected()) {
             DrawableCompat.setTint(mTopDrawable, mTextActiveColorFilter);
-            setTextColor(mTextActiveColorFilter);
         } else {
             DrawableCompat.setTintList(mTopDrawable, null);
-            if (!mShiftingMode) {
-                setTextColor(mInactiveTextColor);
-            }
         }
     }
 
@@ -220,6 +179,16 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
 
     public void setActiveColor(@ColorInt int colorInt) {
         mTextActiveColorFilter = colorInt;
+    }
+
+    @Override
+    public void setInactiveTextColor(@ColorInt int inactiveTextColor) {
+
+    }
+
+    @Override
+    public void setShiftingModeEnabled(boolean shiftingModeEnabled) {
+        mShiftingMode = shiftingModeEnabled;
     }
 
     private void animateSelection(float textSize, float targetTextSize) {
@@ -233,6 +202,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
     }
 
 
+
     private void startParentBackgroundColorAnimator() {
         if (!isSelected()) return;
         Util.runOnAttachedToLayout(this, new Runnable() {
@@ -244,22 +214,13 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
     }
 
     private ColorDrawable getColorDrawable(View view) {
-        return view.getBackground() != null && view.getBackground() instanceof ColorDrawable? ((ColorDrawable) view.getBackground()) : new ColorDrawable(Color.WHITE);
+        return view.getBackground() != null && view.getBackground() instanceof ColorDrawable ? ((ColorDrawable) view.getBackground()) : new ColorDrawable(Color.WHITE);
     }
 
     public void setInactiveTextColorResource(@ColorRes int inactiveTextColor) {
         this.mInactiveTextColor = ContextCompat.getColor(getContext(), inactiveTextColor);
     }
 
-    public void setInactiveTextColor(@ColorInt int inactiveTextColor) {
-        this.mInactiveTextColor = inactiveTextColor;
-        setTextColor(!isSelected() ? mInactiveTextColor : getCurrentTextColor());
-    }
-
-    @Override
-    public void setShiftingModeEnabled(boolean shiftingModeEnabled) {
-            mShiftingMode = shiftingModeEnabled;
-    }
 
     @ColorInt
     public int getInactiveTextColor() {
@@ -302,7 +263,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
                 paddingStart = temp;
             }
             startParentBackgroundColorAnimator();
-            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
+            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomTabletNavigationTextView.this,
                     PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
                     PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize));
             mShiftingMode = mShiftingMode && !isAlwaysTextShown;
@@ -317,7 +278,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
                 alphaEnd = alphaStart;
                 alphaStart = a;
             }
-            objectAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
+            objectAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomTabletNavigationTextView.this,
                     PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
                     PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize),
                     PropertyValuesHolder.ofInt(Properties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd));
@@ -333,11 +294,11 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
                 widthEnd = widthStart;
                 widthStart = a;
             }
-            objectAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
+            objectAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomTabletNavigationTextView.this,
                     PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
                     PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize),
                     PropertyValuesHolder.ofInt(Properties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd),
-                    PropertyValuesHolder.ofInt(Properties.VIEW_WIDTH, widthStart, widthEnd));
+                    PropertyValuesHolder.ofInt(Properties.VIEW_HEIGHT, widthStart, widthEnd));
             startObjectAnimator(objectAnimator);
         }
 
@@ -350,6 +311,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
 
     private class PreHistoricAnimator implements AnimatorCompat {
         private final Interpolator INTERPOLATOR = new FastOutLinearInInterpolator();
+
         @Override
         public void animateSelection(float textSize, float targetTextSize) {
             boolean isAlwaysTextShown = ((ViewGroup) getParent()).getChildCount() == 3;
@@ -361,7 +323,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
                 paddingStart = temp;
             }
             startParentBackgroundColorAnimator();
-            com.nineoldandroids.animation.ObjectAnimator objectAnimator = com.nineoldandroids.animation.ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
+            com.nineoldandroids.animation.ObjectAnimator objectAnimator = com.nineoldandroids.animation.ObjectAnimator.ofPropertyValuesHolder(BottomTabletNavigationTextView.this,
                     com.nineoldandroids.animation.PropertyValuesHolder.ofInt(PrehistoricProperties.PADDING_TOP, paddingStart, paddingEnd),
                     com.nineoldandroids.animation.PropertyValuesHolder.ofFloat(PrehistoricProperties.TEXT_SIZE, textSize, targetTextSize));
             mShiftingMode = mShiftingMode && !isAlwaysTextShown;
@@ -377,7 +339,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
                 alphaEnd = alphaStart;
                 alphaStart = a;
             }
-            objectAnimator = com.nineoldandroids.animation.ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
+            objectAnimator = com.nineoldandroids.animation.ObjectAnimator.ofPropertyValuesHolder(BottomTabletNavigationTextView.this,
                     com.nineoldandroids.animation.PropertyValuesHolder.ofInt(PrehistoricProperties.PADDING_TOP, paddingStart, paddingEnd),
                     com.nineoldandroids.animation.PropertyValuesHolder.ofFloat(PrehistoricProperties.TEXT_SIZE, textSize, targetTextSize),
                     com.nineoldandroids.animation.PropertyValuesHolder.ofInt(PrehistoricProperties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd));
@@ -393,7 +355,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
                 widthEnd = widthStart;
                 widthStart = a;
             }
-            objectAnimator = com.nineoldandroids.animation.ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
+            objectAnimator = com.nineoldandroids.animation.ObjectAnimator.ofPropertyValuesHolder(BottomTabletNavigationTextView.this,
                     com.nineoldandroids.animation.PropertyValuesHolder.ofInt(PrehistoricProperties.PADDING_TOP, paddingStart, paddingEnd),
                     com.nineoldandroids.animation.PropertyValuesHolder.ofFloat(PrehistoricProperties.TEXT_SIZE, textSize, targetTextSize),
                     com.nineoldandroids.animation.PropertyValuesHolder.ofInt(PrehistoricProperties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd),
@@ -402,6 +364,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
             objectAnimator.setInterpolator(new FastOutLinearInInterpolator());
             objectAnimator.start();
         }
+
         private void startObjectAnimator(com.nineoldandroids.animation.ObjectAnimator objectAnimator) {
             objectAnimator.setInterpolator(INTERPOLATOR);
             objectAnimator.setDuration(ANIMATION_DURATION);
@@ -459,7 +422,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
             rgb.addUpdateListener(new com.nineoldandroids.animation.ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(com.nineoldandroids.animation.ValueAnimator a) {
-                    color.setColor((Integer)a.getAnimatedValue());
+                    color.setColor((Integer) a.getAnimatedValue());
                     Util.setBackground(topParent, color);
                 }
             });
@@ -479,7 +442,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
             rgb.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator a) {
-                    color.setColor((Integer)a.getAnimatedValue());
+                    color.setColor((Integer) a.getAnimatedValue());
                     Util.setBackground(topParent, color);
                 }
             });

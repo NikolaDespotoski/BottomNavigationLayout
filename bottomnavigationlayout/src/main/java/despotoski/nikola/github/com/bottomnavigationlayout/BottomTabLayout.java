@@ -30,6 +30,7 @@ import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
@@ -37,6 +38,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,14 +75,16 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     };
     private int mMinBottomItemWidth;
     private boolean mShiftingMode;
-    private final List<BottomNavigationTextView> mBottomTabViews = new ArrayList<>(MAX_BOTTOM_NAVIGATION_ITEMS);
+    private final List<View> mBottomTabViews = new ArrayList<>(MAX_BOTTOM_NAVIGATION_ITEMS);
     private int mMaxItemWidth;
     private int mInactiveTextColor;
     private boolean isTablet;
+    private int mMaxContainerHeight;
 
     public BottomTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initalize(context, attrs);
+
     }
 
     public BottomTabLayout(Context context) {
@@ -95,6 +99,26 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     }
 
     private void initalize(Context context, AttributeSet attrs) {
+        mMaxContainerHeight = (int) getResources().getDimension(R.dimen.bottom_navigation_height);
+        isTablet = getResources().getBoolean(R.bool.isTablet);
+        if (isTablet) {
+            Util.runOnAttachedToLayout(this, new Runnable() {
+                @Override
+                public void run() {
+                    ViewGroup.LayoutParams params = getLayoutParams();
+                    if (params instanceof FrameLayout.LayoutParams) {
+                        ((LayoutParams) params).gravity = GravityCompat.START;
+                    } else if (params instanceof CoordinatorLayout.LayoutParams) {
+                        ((CoordinatorLayout.LayoutParams) params).gravity = GravityCompat.START;
+                    }
+                    params.width = mMaxContainerHeight;
+                    params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+                    requestLayout();
+                    if (mContainer != null) mContainer.requestLayout();
+                }
+            });
+        }
         removeAllViews();
         setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
         setupOverlayView();
@@ -111,8 +135,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         }
         mMaxItemWidth = (int) getResources().getDimension(R.dimen.bottom_navigation_max_width);
         mMinBottomItemWidth = (int) getResources().getDimension(R.dimen.bottom_navigation_min_width);
-        mContainer.setOrientation(LinearLayoutCompat.HORIZONTAL);
-        mContainer.setGravity(Gravity.CENTER | Gravity.CENTER_HORIZONTAL);
+
         setBottomTabs(bottomTabMenuResId, mParentBackgroundColors);
         Util.runOnAttachedToLayout(this, new Runnable() {
             @Override
@@ -131,27 +154,41 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     @Override
     protected LayoutParams generateDefaultLayoutParams() {
+
         LayoutParams layoutParams = super.generateDefaultLayoutParams();
-        layoutParams.gravity = Gravity.BOTTOM;
+        if (!isTablet)
+            layoutParams.gravity = Gravity.BOTTOM;
+        else {
+            layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            layoutParams.gravity = GravityCompat.START;
+        }
         return layoutParams;
     }
 
     private void setupContainer() {
-        isTablet = getResources().getBoolean(R.bool.isTablet);
         mContainer = new LinearLayoutCompat(getContext());
         mContainer.setFocusable(false);
         LayoutParams layoutParams;
         if (isTablet) {
-            layoutParams = new LayoutParams((int) getResources().getDimension(R.dimen.bottom_navigation_height), LayoutParams.MATCH_PARENT);
-            mContainer.setOrientation(LinearLayoutCompat.VERTICAL);
+            layoutParams = new LayoutParams(mMaxContainerHeight, LayoutParams.MATCH_PARENT);
+            layoutParams.gravity = Gravity.CENTER_VERTICAL;
             disableBehavior();
+            mContainer.setOrientation(LinearLayoutCompat.VERTICAL);
+
+            mContainer.setGravity(Gravity.TOP | Gravity.CENTER_VERTICAL);
+            addView(mContainer, layoutParams);
         } else {
+            mContainer.setOrientation(LinearLayoutCompat.HORIZONTAL);
             mContainer.setPadding(0, 0, (int) getResources().getDimension(R.dimen.bottom_navigation_item_padding_bottom), 0);
             layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.bottom_navigation_height));
             layoutParams.gravity = Gravity.TOP;
             layoutParams.bottomMargin = Util.isNavigationBarTranslucent(getContext()) && !isLandscape() ? Util.getNavigationBarHeight(getContext()) : 0;
+            mContainer.setOrientation(LinearLayoutCompat.HORIZONTAL);
+            mContainer.setGravity(Gravity.CENTER | Gravity.CENTER_HORIZONTAL);
+            addView(mContainer, layoutParams);
         }
-        addView(mContainer, layoutParams);
+
+
     }
 
     private void disableBehavior() {
@@ -164,8 +201,13 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     private void setupOverlayView() {
         int height = (int) getResources().getDimension(R.dimen.bottom_navigation_height);
         height += Util.isNavigationBarTranslucent(getContext()) ? Util.getNavigationBarHeight(getContext()) : 0;
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, height);
-        layoutParams.topMargin = getShadowElevation();
+        LayoutParams layoutParams;
+        if (!isTablet) {
+            layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, height);
+            layoutParams.topMargin = getShadowElevation();
+        } else {
+            layoutParams = new LayoutParams(height, LayoutParams.MATCH_PARENT);
+        }
         mRevealOverlayView = new View(getContext());
         mRevealOverlayView.setFocusable(false);
         mRevealOverlayView.setFocusableInTouchMode(false);
@@ -181,8 +223,8 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
             View childAt = mContainer.getChildAt(i);
             childAt.setLayoutParams(generateBottomItemLayoutParams());
             childAt.setOnClickListener(mBottomTabSelectionClickListener);
-            if (childAt instanceof BottomNavigationTextView) {
-                BottomNavigationTextView bottomView = (BottomNavigationTextView) childAt;
+            if (childAt instanceof BottomNavigation) {
+                BottomNavigation bottomView = (BottomNavigation) childAt;
                 bottomView.setShiftingModeEnabled(mShiftingMode);
                 bottomView.setActiveColorResource(mActiveColorFilter);
                 bottomView.setInactiveTextColor(mInactiveTextColor);
@@ -196,10 +238,11 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         if (isLandscape()) {
             mMinBottomItemWidth = Math.min(mMinBottomItemWidth, mMaxItemWidth);
         }
-        return new LinearLayoutCompat.LayoutParams(mMinBottomItemWidth, (int) getResources().getDimension(R.dimen.bottom_navigation_height));
+        if (isTablet) {
+            return new LinearLayoutCompat.LayoutParams(mMaxContainerHeight, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+        return new LinearLayoutCompat.LayoutParams(mMinBottomItemWidth, mMaxContainerHeight);
     }
-
-
 
 
     private boolean isLandscape() {
@@ -216,7 +259,8 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     }
 
     private int findMinItemWidth() {
-        return mContainer.getMeasuredWidth() / mContainer.getChildCount();
+        int longest = isTablet ? mContainer.getMeasuredHeight() : mContainer.getMeasuredWidth();
+        return longest / mContainer.getChildCount();
     }
 
     public void setBottomTabs(@MenuRes int menuResId, int[] parentBackgroundColors) {
@@ -231,7 +275,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         }
     }
 
-   private void populateFromMenuResource(@NonNull MenuBuilder menuBuilder, @NonNull int[] parentBackgroundColors) {
+    private void populateFromMenuResource(@NonNull MenuBuilder menuBuilder, @NonNull int[] parentBackgroundColors) {
         removeAllTabs();
         int size = menuBuilder.size();
         checkBottomItemGuidelines(size);
@@ -246,12 +290,22 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
 
     private void addBottomNavigationItem(BottomNavigationItem item) {
-        BottomNavigationTextView bottomNavigationTextView = new BottomNavigationTextView(getContext(), item);
-        bottomNavigationTextView.setActiveColor(mActiveColorFilter);
-        bottomNavigationTextView.setInactiveTextColor(mInactiveTextColor);
-        bottomNavigationTextView.setTag(item);
-        mContainer.addView(bottomNavigationTextView, generateBottomItemLayoutParams());
-        mBottomTabViews.add(bottomNavigationTextView);
+        View tabView;
+        if (!isTablet) {
+            BottomNavigationTextView bottomNavigationTextView = new BottomNavigationTextView(getContext(), item);
+            bottomNavigationTextView.setActiveColor(mActiveColorFilter);
+            bottomNavigationTextView.setInactiveTextColor(mInactiveTextColor);
+            bottomNavigationTextView.setTag(item);
+            tabView = bottomNavigationTextView;
+        } else {
+            BottomTabletNavigationTextView tabletNavigationView = new BottomTabletNavigationTextView(getContext(), item);
+            tabletNavigationView.setActiveColor(mActiveColorFilter);
+            tabletNavigationView.setInactiveTextColor(mInactiveTextColor);
+            tabletNavigationView.setTag(item);
+            tabView = tabletNavigationView;
+        }
+        mContainer.addView(tabView, generateBottomItemLayoutParams());
+        mBottomTabViews.add(tabView);
     }
 
     public void setSelectedItemPosition(int selectedItemPosition) {
@@ -305,7 +359,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         if (mSelectedItemPosition == View.NO_ID) {
             mSelectedItemPosition = 0;
         }
-        BottomNavigationTextView bottomNavigationTextView = mBottomTabViews.get(mSelectedItemPosition);
+        View bottomNavigationTextView = mBottomTabViews.get(mSelectedItemPosition);
         bottomNavigationTextView.requestFocus();
         bottomNavigationTextView.setSelected(true);
         mCurrentNavigationItem = bottomNavigationTextView;

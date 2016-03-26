@@ -74,7 +74,20 @@ final class Properties {
             object.requestLayout();
         }
     };
+    private static final String VIEW_HEIGHT_NAME = "view_width";
+    public static final Property<View, Integer> VIEW_HEIGHT = new IntProperty<View>(Integer.class, VIEW_HEIGHT_NAME) {
 
+        @Override
+        public Integer get(View object) {
+            return object.getLayoutParams().width;
+        }
+
+        @Override
+        public void set(View object, Integer value) {
+            object.getLayoutParams().height = value;
+            object.requestLayout();
+        }
+    };
     private static final String TEXT_SIZE_NAME = "textSize";
     public static final Property<TextView, Float> TEXT_SIZE = new FloatProperty<TextView>(Float.class, TEXT_SIZE_NAME) {
 
