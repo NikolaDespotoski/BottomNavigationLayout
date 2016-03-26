@@ -30,7 +30,6 @@ import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -103,6 +102,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     private void initalize(Context context, AttributeSet attrs) {
         mMaxContainerHeight = (int) getResources().getDimension(R.dimen.bottom_navigation_height);
         if (isTablet) {
+            setShadowVisible(false);
             Util.runOnAttachedToLayout(this, new Runnable() {
                 @Override
                 public void run() {
@@ -210,7 +210,6 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
             layoutParams = new LayoutParams(height, LayoutParams.MATCH_PARENT);
         }
         mRevealOverlayView = new View(getContext());
-        mRevealOverlayView.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.background_dark));
         mRevealOverlayView.setFocusable(false);
         mRevealOverlayView.setFocusableInTouchMode(false);
         mRevealOverlayView.setClickable(false);

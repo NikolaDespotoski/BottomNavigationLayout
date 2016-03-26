@@ -29,6 +29,7 @@ public class DrawShadowFrameLayout extends FrameLayout {
     private int mShadowElevation = 8;
     private int mWidth;
     private int mHeight;
+    private boolean mShadowVisible = true;
 
     public DrawShadowFrameLayout(Context context) {
         this(context, null, 0);
@@ -45,7 +46,7 @@ public class DrawShadowFrameLayout extends FrameLayout {
         if (mShadowDrawable != null) {
             mShadowDrawable.setCallback(this);
         }
-        setWillNotDraw(false);
+        setWillNotDraw(!mShadowVisible);
     }
 
     @Override
@@ -72,6 +73,9 @@ public class DrawShadowFrameLayout extends FrameLayout {
         }
     }
 
+    public void setShadowVisible(boolean shadowVisible) {
+        setWillNotDraw(!mShadowVisible);
+    }
 
     int getShadowElevation() {
         return mShadowElevation;
