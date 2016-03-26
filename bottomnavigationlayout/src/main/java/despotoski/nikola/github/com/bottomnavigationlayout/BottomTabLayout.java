@@ -96,12 +96,12 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     public BottomTabLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        isTablet = getResources().getBoolean(R.bool.isTablet);
         initalize(context, attrs);
     }
 
     private void initalize(Context context, AttributeSet attrs) {
         mMaxContainerHeight = (int) getResources().getDimension(R.dimen.bottom_navigation_height);
-        isTablet = getResources().getBoolean(R.bool.isTablet);
         if (isTablet) {
             Util.runOnAttachedToLayout(this, new Runnable() {
                 @Override
@@ -114,15 +114,16 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
                     }
                     params.width = mMaxContainerHeight;
                     params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-
                     requestLayout();
                     if (mContainer != null) mContainer.requestLayout();
+                    disableBehavior();
                 }
             });
         }
         removeAllViews();
         setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
-        setupOverlayView();
+        if (!isTablet)
+            setupOverlayView();
         setupContainer();
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BottomNavigationTabLayout);
@@ -175,7 +176,6 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
             layoutParams.gravity = Gravity.CENTER_VERTICAL;
             disableBehavior();
             mContainer.setOrientation(LinearLayoutCompat.VERTICAL);
-
             mContainer.setGravity(Gravity.TOP | Gravity.CENTER_VERTICAL);
             addView(mContainer, layoutParams);
         } else {
@@ -309,6 +309,10 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         mContainer.addView(tabView, generateBottomItemLayoutParams());
         mBottomTabViews.add(tabView);
     }
+    /* Method for manually selecting bottom navigation item
+     * @param selectedItemPosition index of item (zero based)
+     *
+     */
 
     public void setSelectedItemPosition(int selectedItemPosition) {
         mSelectedItemPosition = selectedItemPosition;
@@ -326,6 +330,12 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         super.onSizeChanged(w, h, oldw, oldh);
         updateBottomNavViews();
     }
+
+    /*  Convinient way to populate bottom navigation layout using MenuBulder
+     *
+     *  @param BottomTabsBuilder builder,
+     *
+     */
 
     public void populateBottomTabItems(@NonNull BottomTabsBuilder builder) {
         if (mContainer.getChildCount() >= MIN_BOTTOM_NAVIGATION_ITEMS) {
