@@ -52,7 +52,6 @@ public final class BottomTabletNavigationTextView extends ImageView implements B
 
 
     private static final long ANIMATION_DURATION = 200;
-    private String mText;
     private int mIcon;
     private int mParentBackgroundColor;
     private int mTextActiveColorFilter = Color.WHITE;
@@ -103,7 +102,6 @@ public final class BottomTabletNavigationTextView extends ImageView implements B
         mParentBackgroundColor = bottomNavigationItem.getParentBackgroundColorResource() != View.NO_ID ?
                 ContextCompat.getColor(getContext(), bottomNavigationItem.getParentBackgroundColorResource()) : bottomNavigationItem.getParentColorBackgroundColor();
         mIcon = bottomNavigationItem.getIcon();
-        mText = bottomNavigationItem.getText();
         mTopDrawable = DrawableCompat.wrap(bottomNavigationItem.getIconDrawable());
         initialize();
     }
@@ -119,7 +117,7 @@ public final class BottomTabletNavigationTextView extends ImageView implements B
         if (mTopDrawable == null) {
             mTopDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(getContext(), mIcon));
         }
-
+        setImageDrawable(mTopDrawable);
         Util.runOnAttachedToLayout(this, new Runnable() {
             @Override
             public void run() {
@@ -155,8 +153,6 @@ public final class BottomTabletNavigationTextView extends ImageView implements B
     @Override
     public void setSelected(boolean selected) {
         super.setSelected(selected);
-
-        boolean isAlwaysTextShown = ((ViewGroup) getParent()).getChildCount() == 3;
         if (selected && !previouslySelected) {
             applyColorFilters();
         } else if (!selected && previouslySelected) {
