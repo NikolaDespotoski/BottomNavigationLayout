@@ -14,11 +14,11 @@
         android:icon="@drawable/ic_favorite_white_24dp"
         android:title="Item 3"></item>
 
-<!--
+
     <item
         android:id="@+id/id4"
         android:icon="@drawable/ic_favorite_white_24dp"
         android:title="Item 4"></item>
--->
+
 
 </menu>
