@@ -152,11 +152,6 @@ public final class BottomTabletNavigationTextView extends ImageView implements B
     public void setShiftingModeEnabled(boolean shiftingModeEnabled) {
     }
 
-    private void animateSelection(float textSize, float targetTextSize) {
-        mSelectionAnimator.animateSelection(textSize, targetTextSize);
-    }
-
-
     public void setInactiveTextColorResource(@ColorRes int inactiveTextColor) {
         this.mInactiveTextColor = ContextCompat.getColor(getContext(), inactiveTextColor);
     }
@@ -190,7 +185,7 @@ public final class BottomTabletNavigationTextView extends ImageView implements B
 
         @Override
         public void animateSelection(float textSize, float targetTextSize) {
-            float scale = isSelected() ? 1.1f : 1.0f;
+            float scale = isSelected() ? 1.2f : 1.0f;
             ViewCompat.animate(BottomTabletNavigationTextView.this)
                     .scaleX(scale).scaleY(scale)
                     .setDuration(ANIMATION_DURATION).setInterpolator(INTERPOLATOR).start();

@@ -457,7 +457,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
                     public SavedState[] newArray(int size) {
                         return new SavedState[size];
                     }
-                };
+        };
     }
 }
 
