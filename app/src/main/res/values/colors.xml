@@ -3,11 +3,15 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="active_color">#d32f2f</color>
+    <color name="active_color">#eeff41</color>
+    <color name="parent_background_1">#19418b</color>
+    <color name="parent_background_2">#0c374d</color>
+    <color name="parent_background_3">#1b5e20</color>
+    <color name="parent_background_4">#00695c</color>
     <array name="menu_parent_background_colors">
-        <item>@android:color/holo_red_light</item>
-        <item>@android:color/holo_blue_bright</item>
-        <item>@android:color/holo_green_dark</item>
-       <item>@android:color/holo_green_dark</item>
+        <item>@color/parent_background_1</item>
+        <item>@color/parent_background_2</item>
+        <item>@color/parent_background_3</item>
+       <item>@color/parent_background_4</item>
     </array>
 </resources>

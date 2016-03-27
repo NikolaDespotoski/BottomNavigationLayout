@@ -403,6 +403,9 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     }
 
+    public void setEnableScrollingBehavior(boolean enable){
+        BottomNavigationBehavior.from(this).setScrollingEnabled(enable);
+    }
     final View getRevealOverlayView() {
         return mRevealOverlayView;
     }

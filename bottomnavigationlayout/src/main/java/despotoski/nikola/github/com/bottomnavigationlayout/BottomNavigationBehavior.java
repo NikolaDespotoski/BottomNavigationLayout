@@ -43,6 +43,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
     private View mTabsHolder;
     private View mSnackBarLayout;
     private int mSnackbarHeight = -1;
+    private boolean scrollingEnabled = true;
 
     public BottomNavigationBehavior() {
         super();
@@ -57,6 +58,19 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
         a.recycle();
     }
 
+    public static <V extends View> BottomNavigationBehavior<V> from(V view) {
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        if (!(params instanceof CoordinatorLayout.LayoutParams)) {
+            throw new IllegalArgumentException("The view is not a child of CoordinatorLayout");
+        }
+        CoordinatorLayout.Behavior behavior = ((CoordinatorLayout.LayoutParams) params)
+                .getBehavior();
+        if (!(behavior instanceof BottomNavigationBehavior)) {
+            throw new IllegalArgumentException(
+                    "The view is not associated with BottomNavigationBehavior");
+        }
+        return (BottomNavigationBehavior<V>) behavior;
+    }
 
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, V child, View dependency) {
@@ -70,7 +84,25 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
                     dependency.getPaddingTop(), dependency.getPaddingRight(), targetPadding
             );
         }
-        return super.layoutDependsOn(parent, child, dependency);
+        return dependency instanceof Snackbar.SnackbarLayout;
+    }
+
+    @Override
+    public void onDependentViewRemoved(CoordinatorLayout parent, V child, View dependency) {
+        updateScrollingForSnackbar(dependency, true);
+        super.onDependentViewRemoved(parent, child, dependency);
+    }
+
+    private void updateScrollingForSnackbar(View dependency, boolean enabled) {
+        if (!isTablet && dependency instanceof Snackbar.SnackbarLayout) {
+            scrollingEnabled = enabled;
+        }
+    }
+
+    @Override
+    public boolean onDependentViewChanged(CoordinatorLayout parent, V child, View dependency) {
+        updateScrollingForSnackbar(dependency, false);
+        return super.onDependentViewChanged(parent, child, dependency);
     }
 
     @Override
@@ -98,6 +130,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
     }
 
     private void handleDirection(V child, int scrollDirection) {
+        if (!scrollingEnabled) return;
         if (scrollDirection == ScrollDirection.SCROLL_DIRECTION_DOWN && hidden) {
             hidden = false;
             animateOffset(child, 0);
@@ -126,7 +159,6 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
         }
     }
 
-
     private void ensureOrCancelAnimator(V child) {
         if (mOffsetValueAnimator == null) {
             mOffsetValueAnimator = ViewCompat.animate(child);
@@ -143,18 +175,11 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
         }
     }
 
-    public static <V extends View> BottomNavigationBehavior<V> from(V view) {
-        ViewGroup.LayoutParams params = view.getLayoutParams();
-        if (!(params instanceof CoordinatorLayout.LayoutParams)) {
-            throw new IllegalArgumentException("The view is not a child of CoordinatorLayout");
-        }
-        CoordinatorLayout.Behavior behavior = ((CoordinatorLayout.LayoutParams) params)
-                .getBehavior();
-        if (!(behavior instanceof BottomNavigationBehavior)) {
-            throw new IllegalArgumentException(
-                    "The view is not associated with BottomNavigationBehavior");
-        }
-        return (BottomNavigationBehavior<V>) behavior;
+    public boolean isScrollingEnabled() {
+        return scrollingEnabled;
     }
 
+    public void setScrollingEnabled(boolean scrollingEnabled) {
+        this.scrollingEnabled = scrollingEnabled;
+    }
 }
