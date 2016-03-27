@@ -40,6 +40,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
     private ViewPropertyAnimatorCompat mOffsetValueAnimator;
     private ViewGroup mTabLayout;
     private View mTabsHolder;
+    private View mSnackBarLayout;
 
     public BottomNavigationBehavior() {
         super();
@@ -53,15 +54,12 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
         a.recycle();
     }
 
-    @Override
-    public boolean onDependentViewChanged(CoordinatorLayout parent, V child, View dependency) {
-        return super.onDependentViewChanged(parent, child, dependency);
-    }
 
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, V child, View dependency) {
-        if (dependency instanceof Snackbar.SnackbarLayout) {
-            dependency.setPadding(dependency.getPaddingLeft(),
+        if (dependency instanceof Snackbar.SnackbarLayout && mSnackBarLayout == null) {
+            mSnackBarLayout = dependency;
+            mSnackBarLayout.setPadding(dependency.getPaddingLeft(),
                     dependency.getPaddingTop(), dependency.getPaddingRight(),
                     (int) (dependency.getHeight() + child.getContext().getResources().getDimension(R.dimen.bottom_navigation_height)));
         }
@@ -111,7 +109,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
     private void animateOffset(final V child, final int offset) {
         ensureOrCancelAnimator(child);
         mOffsetValueAnimator.translationY(offset).start();
-        //  animateTabsHolder(offset);
+        animateTabsHolder(offset);
     }
 
     private void animateTabsHolder(int offset) {
@@ -147,12 +145,9 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
                 .getBehavior();
         if (!(behavior instanceof BottomNavigationBehavior)) {
             throw new IllegalArgumentException(
-                    "The view is not associated with ottomNavigationBehavior");
+                    "The view is not associated with BottomNavigationBehavior");
         }
         return (BottomNavigationBehavior<V>) behavior;
     }
 
-    public void setTabLayoutId(int mTabLayoutId) {
-        this.mTabLayoutId = mTabLayoutId;
-    }
 }

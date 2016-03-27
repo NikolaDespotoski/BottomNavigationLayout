@@ -416,68 +416,68 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         mActiveColorFilter = activeColor;
     }
 
-public interface OnNavigationItemSelectionListener {
-    void onBottomNavigationItemSelected(BottomNavigationItem item);
+    public interface OnNavigationItemSelectionListener {
+        void onBottomNavigationItemSelected(BottomNavigationItem item);
 
-    void onBottomNavigationItemUnselected(BottomNavigationItem item);
-}
-
-public static class BottomTabsBuilder {
-
-
-    private ArrayList<BottomNavigationItem> mNavItems;
-
-    public BottomTabsBuilder addBottomNavigationItem(BottomNavigationItem bottomNavigationItem) {
-        ensureList();
-        mNavItems.add(bottomNavigationItem);
-        return this;
+        void onBottomNavigationItemUnselected(BottomNavigationItem item);
     }
 
-    private void ensureList() {
-        if (mNavItems == null) {
-            mNavItems = new ArrayList<>();
+    public static class BottomTabsBuilder {
+
+
+        private ArrayList<BottomNavigationItem> mNavItems;
+
+        public BottomTabsBuilder addBottomNavigationItem(BottomNavigationItem bottomNavigationItem) {
+            ensureList();
+            mNavItems.add(bottomNavigationItem);
+            return this;
+        }
+
+        private void ensureList() {
+            if (mNavItems == null) {
+                mNavItems = new ArrayList<>();
+            }
+        }
+
+        public void validate() {
+            checkBottomItemGuidelines(mNavItems != null ? mNavItems.size() : 0);
+        }
+
+        List<BottomNavigationItem> build() {
+            validate();
+            return mNavItems;
         }
     }
 
-    public void validate() {
-        checkBottomItemGuidelines(mNavItems != null ? mNavItems.size() : 0);
+
+    static class SavedState extends BaseSavedState {
+        int selectedPosition;
+
+        SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            this.selectedPosition = in.readInt();
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeInt(this.selectedPosition);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
+
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
     }
-
-    List<BottomNavigationItem> build() {
-        validate();
-        return mNavItems;
-    }
-}
-
-
-static class SavedState extends BaseSavedState {
-    int selectedPosition;
-
-    SavedState(Parcelable superState) {
-        super(superState);
-    }
-
-    private SavedState(Parcel in) {
-        super(in);
-        this.selectedPosition = in.readInt();
-    }
-
-    @Override
-    public void writeToParcel(Parcel out, int flags) {
-        super.writeToParcel(out, flags);
-        out.writeInt(this.selectedPosition);
-    }
-
-    public static final Parcelable.Creator<SavedState> CREATOR =
-            new Parcelable.Creator<SavedState>() {
-                public SavedState createFromParcel(Parcel in) {
-                    return new SavedState(in);
-                }
-
-                public SavedState[] newArray(int size) {
-                    return new SavedState[size];
-                }
-            };
-}
 }
 
