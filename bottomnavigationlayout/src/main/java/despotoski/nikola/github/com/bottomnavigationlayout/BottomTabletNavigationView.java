@@ -37,7 +37,7 @@ import android.widget.ImageView;
 /**
  * Created by Nikola on 3/23/2016.
  */
-public final class BottomTabletNavigationTextView extends ImageView implements BottomNavigation {
+public final class BottomTabletNavigationView extends ImageView implements BottomNavigation {
 
 
     private static final long ANIMATION_DURATION = 200;
@@ -52,29 +52,29 @@ public final class BottomTabletNavigationTextView extends ImageView implements B
     private boolean isTablet;
     private int mTabletLeftPadding;
 
-    public BottomTabletNavigationTextView(Context context) {
+    public BottomTabletNavigationView(Context context) {
         super(context);
         initialize();
     }
 
-    public BottomTabletNavigationTextView(Context context, AttributeSet attrs) {
+    public BottomTabletNavigationView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize();
 
     }
 
-    public BottomTabletNavigationTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BottomTabletNavigationView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public BottomTabletNavigationTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public BottomTabletNavigationView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         invalidate();
     }
 
-    public BottomTabletNavigationTextView(Context context, BottomNavigationItem bottomNavigationItem) {
+    public BottomTabletNavigationView(Context context, BottomNavigationItem bottomNavigationItem) {
         super(context);
         mIcon = bottomNavigationItem.getIcon();
         mTopDrawable = DrawableCompat.wrap(bottomNavigationItem.getIconDrawable());
@@ -186,7 +186,7 @@ public final class BottomTabletNavigationTextView extends ImageView implements B
         @Override
         public void animateSelection(float textSize, float targetTextSize) {
             float scale = isSelected() ? 1.2f : 1.0f;
-            ViewCompat.animate(BottomTabletNavigationTextView.this)
+            ViewCompat.animate(BottomTabletNavigationView.this)
                     .scaleX(scale).scaleY(scale)
                     .setDuration(ANIMATION_DURATION).setInterpolator(INTERPOLATOR).start();
         }

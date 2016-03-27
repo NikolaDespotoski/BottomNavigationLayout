@@ -303,7 +303,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
             bottomNavigationTextView.setTag(item);
             tabView = bottomNavigationTextView;
         } else {
-            BottomTabletNavigationTextView tabletNavigationView = new BottomTabletNavigationTextView(getContext(), item);
+            BottomTabletNavigationView tabletNavigationView = new BottomTabletNavigationView(getContext(), item);
             tabletNavigationView.setActiveColor(mActiveColorFilter);
             tabletNavigationView.setInactiveTextColor(mInactiveTextColor);
             tabletNavigationView.setTag(item);
