@@ -7,6 +7,10 @@ Simple lightweight library that works out of the box implementing [Bottom naviga
   Shifting mode off with more than 3 items: to be posted soon
   
   Shifting mode on with more than 3 items: to be posted soon
+  
+  Tablet mode:
+  
+  ![](https://raw.githubusercontent.com/NikolaDespotoski/BottomNavigationLayout/master/tablet_mode.png "Tablet support")
 
 # Usage 
 1. Add jitpack.io to your project gradle:
