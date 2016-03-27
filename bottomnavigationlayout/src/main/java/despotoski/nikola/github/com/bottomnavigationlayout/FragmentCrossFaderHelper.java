@@ -18,6 +18,8 @@
 
 package despotoski.nikola.github.com.bottomnavigationlayout;
 
+import android.support.annotation.IdRes;
+
 import java.lang.ref.WeakReference;
 
 /**
@@ -27,7 +29,7 @@ public abstract class FragmentCrossFaderHelper implements BottomTabLayout.OnNavi
     private final BottomTabLayout mBottomTabLayout;
     private final WeakReference<BottomTabLayout.OnNavigationItemSelectionListener> mListenerRef;
 
-    public FragmentCrossFaderHelper(BottomTabLayout bottomTabLayout, BottomTabLayout.OnNavigationItemSelectionListener listener) {
+    public FragmentCrossFaderHelper(@IdRes int fragmentContainer, BottomTabLayout bottomTabLayout, BottomTabLayout.OnNavigationItemSelectionListener listener) {
         mListenerRef = new WeakReference<>(listener);
         mBottomTabLayout = bottomTabLayout;
         mBottomTabLayout.setOnNavigationItemSelectionListener(this);
@@ -35,7 +37,7 @@ public abstract class FragmentCrossFaderHelper implements BottomTabLayout.OnNavi
 
     @Override
     public void onBottomNavigationItemSelected(BottomNavigationItem item) {
-
+        
     }
 
     @Override

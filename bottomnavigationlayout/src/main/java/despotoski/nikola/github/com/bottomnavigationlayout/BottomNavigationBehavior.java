@@ -41,7 +41,6 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
     private ViewPropertyAnimatorCompat mOffsetValueAnimator;
     private ViewGroup mTabLayout;
     private View mTabsHolder;
-    private View mSnackBarLayout;
     private int mSnackbarHeight = -1;
     private boolean scrollingEnabled = true;
 
