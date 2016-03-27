@@ -2,7 +2,8 @@
 
 Simple lightweight library that works out of the box implementing [Bottom navigation component of Material Design guidelines](https://www.google.com/design/spec/components/bottom-navigation.html)
 
-  Three items http://i.imgur.com/uQjIy1O.webm
+  Three items 
+  (http://i.imgur.com/uQjIy1O.webm "Three items")
   
   Shifting mode off with more than 3 items: to be posted soon
   
