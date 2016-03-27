@@ -42,6 +42,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
     private ViewGroup mTabLayout;
     private View mTabsHolder;
     private View mSnackBarLayout;
+    private int mSnackbarHeight = -1;
 
     public BottomNavigationBehavior() {
         super();
@@ -59,11 +60,15 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
 
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, V child, View dependency) {
-        if (!isTablet && dependency instanceof Snackbar.SnackbarLayout && mSnackBarLayout == null) {
-            mSnackBarLayout = dependency;
-            mSnackBarLayout.setPadding(dependency.getPaddingLeft(),
-                    dependency.getPaddingTop(), dependency.getPaddingRight(),
-                    (int) (dependency.getHeight() + child.getContext().getResources().getDimension(R.dimen.bottom_navigation_height)));
+        if (!isTablet && dependency instanceof Snackbar.SnackbarLayout) {
+            if (mSnackbarHeight == -1) {
+                mSnackbarHeight = dependency.getHeight();
+            }
+            int targetPadding = (int) (mSnackbarHeight +
+                    child.getContext().getResources().getDimension(R.dimen.bottom_navigation_height));
+            dependency.setPadding(dependency.getPaddingLeft(),
+                    dependency.getPaddingTop(), dependency.getPaddingRight(), targetPadding
+            );
         }
         return super.layoutDependsOn(parent, child, dependency);
     }
