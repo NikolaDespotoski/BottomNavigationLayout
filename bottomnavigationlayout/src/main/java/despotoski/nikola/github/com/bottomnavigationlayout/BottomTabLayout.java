@@ -30,7 +30,9 @@ import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
@@ -100,6 +102,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     }
 
     private void initalize(Context context, AttributeSet attrs) {
+
         mMaxContainerHeight = (int) getResources().getDimension(R.dimen.bottom_navigation_height);
         if (isTablet) {
             setShadowVisible(false);
@@ -121,6 +124,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
             });
         }
         removeAllViews();
+        ViewCompat.setElevation(this, getResources().getDimension(R.dimen.bottom_navigation_elevation));
         setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
         if (!isTablet)
             setupOverlayView();
@@ -330,6 +334,22 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         updateBottomNavViews();
     }
 
+    public void wrapSnackbar(@NonNull Snackbar snackbar) {
+        if (!snackbar.isShown()) {
+
+            final View snackBarView = snackbar.getView();
+            final CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) snackBarView.getLayoutParams();
+
+            params.setMargins(params.leftMargin,
+                    params.topMargin,
+                    params.rightMargin,
+                    params.bottomMargin + getMeasuredHeight() * 2);
+
+            snackBarView.setLayoutParams(params);
+            snackbar.show();
+        }
+    }
+
     /*  Convinient way to populate bottom navigation layout using MenuBulder
      *
      *  @param BottomTabsBuilder builder,
@@ -396,68 +416,68 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         mActiveColorFilter = activeColor;
     }
 
-    public interface OnNavigationItemSelectionListener {
-        void onBottomNavigationItemSelected(BottomNavigationItem item);
+public interface OnNavigationItemSelectionListener {
+    void onBottomNavigationItemSelected(BottomNavigationItem item);
 
-        void onBottomNavigationItemUnselected(BottomNavigationItem item);
+    void onBottomNavigationItemUnselected(BottomNavigationItem item);
+}
+
+public static class BottomTabsBuilder {
+
+
+    private ArrayList<BottomNavigationItem> mNavItems;
+
+    public BottomTabsBuilder addBottomNavigationItem(BottomNavigationItem bottomNavigationItem) {
+        ensureList();
+        mNavItems.add(bottomNavigationItem);
+        return this;
     }
 
-    public static class BottomTabsBuilder {
-
-
-        private ArrayList<BottomNavigationItem> mNavItems;
-
-        public BottomTabsBuilder addBottomNavigationItem(BottomNavigationItem bottomNavigationItem) {
-            ensureList();
-            mNavItems.add(bottomNavigationItem);
-            return this;
-        }
-
-        private void ensureList() {
-            if (mNavItems == null) {
-                mNavItems = new ArrayList<>();
-            }
-        }
-
-        public void validate() {
-            checkBottomItemGuidelines(mNavItems != null ? mNavItems.size() : 0);
-        }
-
-        List<BottomNavigationItem> build() {
-            validate();
-            return mNavItems;
+    private void ensureList() {
+        if (mNavItems == null) {
+            mNavItems = new ArrayList<>();
         }
     }
 
-
-    static class SavedState extends BaseSavedState {
-        int selectedPosition;
-
-        SavedState(Parcelable superState) {
-            super(superState);
-        }
-
-        private SavedState(Parcel in) {
-            super(in);
-            this.selectedPosition = in.readInt();
-        }
-
-        @Override
-        public void writeToParcel(Parcel out, int flags) {
-            super.writeToParcel(out, flags);
-            out.writeInt(this.selectedPosition);
-        }
-
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
-                    }
-
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-        };
+    public void validate() {
+        checkBottomItemGuidelines(mNavItems != null ? mNavItems.size() : 0);
     }
+
+    List<BottomNavigationItem> build() {
+        validate();
+        return mNavItems;
+    }
+}
+
+
+static class SavedState extends BaseSavedState {
+    int selectedPosition;
+
+    SavedState(Parcelable superState) {
+        super(superState);
+    }
+
+    private SavedState(Parcel in) {
+        super(in);
+        this.selectedPosition = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        super.writeToParcel(out, flags);
+        out.writeInt(this.selectedPosition);
+    }
+
+    public static final Parcelable.Creator<SavedState> CREATOR =
+            new Parcelable.Creator<SavedState>() {
+                public SavedState createFromParcel(Parcel in) {
+                    return new SavedState(in);
+                }
+
+                public SavedState[] newArray(int size) {
+                    return new SavedState[size];
+                }
+            };
+}
 }
 

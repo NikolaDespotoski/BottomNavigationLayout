@@ -21,6 +21,7 @@ package despotoski.nikola.github.com.bottomnavigationlayout;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
@@ -50,6 +51,21 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
                 R.styleable.BottomNavigationBehavior_Params);
         mTabLayoutId = a.getResourceId(R.styleable.BottomNavigationBehavior_Params_tabLayoutId, View.NO_ID);
         a.recycle();
+    }
+
+    @Override
+    public boolean onDependentViewChanged(CoordinatorLayout parent, V child, View dependency) {
+        return super.onDependentViewChanged(parent, child, dependency);
+    }
+
+    @Override
+    public boolean layoutDependsOn(CoordinatorLayout parent, V child, View dependency) {
+        if (dependency instanceof Snackbar.SnackbarLayout) {
+            dependency.setPadding(dependency.getPaddingLeft(),
+                    dependency.getPaddingTop(), dependency.getPaddingRight(),
+                    (int) (dependency.getHeight() + child.getContext().getResources().getDimension(R.dimen.bottom_navigation_height)));
+        }
+        return super.layoutDependsOn(parent, child, dependency);
     }
 
     @Override
@@ -95,7 +111,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
     private void animateOffset(final V child, final int offset) {
         ensureOrCancelAnimator(child);
         mOffsetValueAnimator.translationY(offset).start();
-      //  animateTabsHolder(offset);
+        //  animateTabsHolder(offset);
     }
 
     private void animateTabsHolder(int offset) {
