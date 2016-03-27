@@ -26,6 +26,7 @@ import android.widget.FrameLayout;
 
 public class DrawShadowFrameLayout extends FrameLayout {
     private final Drawable mShadowDrawable;
+    protected  final boolean isTablet;
     private int mShadowElevation = 8;
     private int mWidth;
     private int mHeight;
@@ -41,12 +42,12 @@ public class DrawShadowFrameLayout extends FrameLayout {
 
     public DrawShadowFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
+        isTablet = getResources().getBoolean(R.bool.isTablet);
         mShadowDrawable = ContextCompat.getDrawable(getContext(), R.drawable.shadow);
         if (mShadowDrawable != null) {
             mShadowDrawable.setCallback(this);
         }
-        setWillNotDraw(!mShadowVisible);
+        setWillNotDraw(!mShadowVisible && !isTablet);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class DrawShadowFrameLayout extends FrameLayout {
     }
 
     private void updateShadowBounds() {
-        if (mShadowDrawable != null) {
+        if (mShadowDrawable != null && !isTablet) {
             mShadowDrawable.setBounds(0, 0, mWidth, mShadowElevation);
         }
         ViewCompat.postInvalidateOnAnimation(this);
@@ -67,7 +68,7 @@ public class DrawShadowFrameLayout extends FrameLayout {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        if (mShadowDrawable != null && mShadowVisible) {
+        if (mShadowDrawable != null && mShadowVisible && !isTablet) {
             getBackground().setBounds(0, mShadowDrawable.getBounds().bottom, mWidth, mHeight);
             mShadowDrawable.draw(canvas);
         }
