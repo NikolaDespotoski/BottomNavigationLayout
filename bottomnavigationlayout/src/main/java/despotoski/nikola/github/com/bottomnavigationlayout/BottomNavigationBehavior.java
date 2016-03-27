@@ -35,6 +35,7 @@ import android.view.animation.Interpolator;
  */
 public final class BottomNavigationBehavior<V extends View> extends VerticalScrollingBehavior<V> {
     private static final Interpolator INTERPOLATOR = new LinearOutSlowInInterpolator();
+    private boolean isTablet;
     private int mTabLayoutId;
     private boolean hidden = false;
     private ViewPropertyAnimatorCompat mOffsetValueAnimator;
@@ -48,6 +49,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
 
     public BottomNavigationBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
+        isTablet = context.getResources().getBoolean(R.bool.isTablet);
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BottomNavigationBehavior_Params);
         mTabLayoutId = a.getResourceId(R.styleable.BottomNavigationBehavior_Params_tabLayoutId, View.NO_ID);
@@ -57,7 +59,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
 
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, V child, View dependency) {
-        if (dependency instanceof Snackbar.SnackbarLayout && mSnackBarLayout == null) {
+        if (!isTablet && dependency instanceof Snackbar.SnackbarLayout && mSnackBarLayout == null) {
             mSnackBarLayout = dependency;
             mSnackBarLayout.setPadding(dependency.getPaddingLeft(),
                     dependency.getPaddingTop(), dependency.getPaddingRight(),
