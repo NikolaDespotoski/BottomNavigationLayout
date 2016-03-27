@@ -100,6 +100,7 @@ In order to offset the content from BottomNavigatonLayout direct child of the Co
     </android.support.v4.widget.NestedScrollView>
     
 ````
+
 #Notes
 
 1. Number of items must be between 3 and 5 according to Material Design Bottom Navigation Guidelines
