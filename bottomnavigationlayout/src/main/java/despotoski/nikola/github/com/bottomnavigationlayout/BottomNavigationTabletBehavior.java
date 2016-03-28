@@ -21,13 +21,14 @@ package despotoski.nikola.github.com.bottomnavigationlayout;
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
+import android.util.LayoutDirection;
 import android.view.View;
 import android.view.ViewGroup;
 
 /**
  * Created by nikola on 3/26/16.
  */
-public class BottomNavigationTabletBehavior extends CoordinatorLayout.Behavior<View>{
+public class BottomNavigationTabletBehavior extends CoordinatorLayout.Behavior<View> {
     public BottomNavigationTabletBehavior() {
     }
 
@@ -38,8 +39,12 @@ public class BottomNavigationTabletBehavior extends CoordinatorLayout.Behavior<V
     @Override
     public boolean onLayoutChild(CoordinatorLayout parent, View child, int layoutDirection) {
         boolean b = super.onLayoutChild(parent, child, layoutDirection);
-        if(child.getLayoutParams() instanceof ViewGroup.MarginLayoutParams){
-            ((ViewGroup.MarginLayoutParams) child.getLayoutParams()).leftMargin = (int) child.getContext().getResources().getDimension(R.dimen.bottom_navigation_height);
+        if (child.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            if (layoutDirection == LayoutDirection.LTR)
+                ((ViewGroup.MarginLayoutParams) child.getLayoutParams()).leftMargin = (int) child.getContext().getResources().getDimension(R.dimen.bottom_navigation_height);
+            else if (layoutDirection == LayoutDirection.RTL) {
+                ((ViewGroup.MarginLayoutParams) child.getLayoutParams()).rightMargin = (int) child.getContext().getResources().getDimension(R.dimen.bottom_navigation_height);
+            }
         }
         return b;
     }
