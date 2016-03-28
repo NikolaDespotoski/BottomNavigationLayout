@@ -25,8 +25,8 @@ import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
 public class DrawShadowFrameLayout extends FrameLayout {
-    protected final boolean isTablet;
-    private final Drawable mShadowDrawable;
+    protected boolean isTablet;
+    private Drawable mShadowDrawable;
     private int mShadowElevation = 8;
     private int mWidth;
     private int mHeight;
@@ -34,14 +34,20 @@ public class DrawShadowFrameLayout extends FrameLayout {
 
     public DrawShadowFrameLayout(Context context) {
         this(context, null, 0);
+        init();
     }
 
     public DrawShadowFrameLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
+        init();
     }
 
     public DrawShadowFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init() {
         isTablet = getResources().getBoolean(R.bool.isTablet);
         mShadowDrawable = ContextCompat.getDrawable(getContext(), R.drawable.shadow);
         if (mShadowDrawable != null) {
