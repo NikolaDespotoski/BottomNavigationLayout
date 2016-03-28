@@ -197,8 +197,8 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
                 layoutParams.bottomMargin = targetPadding - shadow;
                 child.bringToFront();
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    parent.requestLayout();
-                    parent.invalidate();
+                    child.getParent().requestLayout();
+                    ((View)child.getParent()).invalidate();
                 }
 
             }
