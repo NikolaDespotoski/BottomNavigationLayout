@@ -4,11 +4,11 @@ Simple lightweight library that works out of the box implementing [Bottom naviga
 
   Three items 
   
-  ![](http://i.imgur.com/uQjIy1O.gif)
+  ![3](http://i.imgur.com/uQjIy1O.gif)
   
   Shifting mode off with more than 3 items:
   
-  ![](http://i.imgur.com/OrADI77.gif)
+  ![no](http://i.imgur.com/OrADI77.gif)
   
   Shifting mode on with more than 3 items: to be posted soon
   
@@ -17,7 +17,7 @@ Simple lightweight library that works out of the box implementing [Bottom naviga
   ![](https://raw.githubusercontent.com/NikolaDespotoski/BottomNavigationLayout/master/tablet_mode.png "Tablet support")
 
 # Usage 
-1. Add jitpack.io to your project gradle:
+ 1. Add jitpack.io to your project gradle:
 ```
 allprojects {
     repositories {
@@ -27,11 +27,11 @@ allprojects {
 }
 ```
 
-Add this library to your module gradle dependencies: 
+ 2.  Add this library to your module gradle dependencies: 
 ```
  compile 'com.github.NikolaDespotoski:BottomNavigationLayout:0.4.2'
 ```
-2. In xml layout resource
+ 3. In xml layout resource
 
 ```
 <despotoski.nikola.github.com.bottomnavigationlayout.BottomTabLayout
@@ -48,7 +48,7 @@ Add this library to your module gradle dependencies:
         
 
 
-3. Programatically:
+ 4. Programatically:
 
 ```
  BottomTabLayout tabLayout = (BottomTabLayout) findViewById(R.id.tabs);
@@ -88,7 +88,7 @@ Add this library to your module gradle dependencies:
                         .build());
         tabLayout.populateBottomTabItems(builder);
 ```
-4. Tablet mode
+ 5. Tablet mode
  
 In order to offset the content from BottomNavigatonLayout direct child of the CoordinatorLayout must use the provided tablet behavior like:
 
