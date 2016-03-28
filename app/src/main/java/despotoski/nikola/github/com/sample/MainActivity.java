@@ -5,6 +5,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.squareup.leakcanary.LeakCanary;
+
 import despotoski.nikola.github.com.bottomnavigationlayout.BottomNavigationItem;
 import despotoski.nikola.github.com.bottomnavigationlayout.BottomNavigationItemBuilder;
 import despotoski.nikola.github.com.bottomnavigationlayout.BottomTabLayout;
@@ -16,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements BottomTabLayout.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LeakCanary.install(getApplication());
         setContentView(R.layout.activity_main);
         BottomTabLayout tabLayout = (BottomTabLayout) findViewById(R.id.tabs);
         tabLayout.setOnNavigationItemSelectionListener(this);
