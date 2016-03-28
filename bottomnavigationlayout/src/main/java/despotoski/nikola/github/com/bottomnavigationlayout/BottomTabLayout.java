@@ -209,7 +209,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     private void setupOverlayView() {
         int height = (int) getResources().getDimension(R.dimen.bottom_navigation_height);
-        height += Util.isNavigationBarTranslucent(getContext()) ? Util.getNavigationBarHeight(getContext()) : 0;
+        height += Util.isNavigationBarTranslucent(getContext()) && !isLandscape() ? Util.getNavigationBarHeight(getContext()) : 0;
         LayoutParams layoutParams;
         if (!isTablet) {
             layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, height);
