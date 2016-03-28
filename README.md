@@ -8,7 +8,7 @@ Simple lightweight library that works out of the box implementing [Bottom naviga
   
   Shifting mode off with more than 3 items:
   
-  ![](http://i.imgur.com/OrADI77.gifv)
+  ![](http://i.imgur.com/OrADI77.gif)
   
   Shifting mode on with more than 3 items: to be posted soon
   
