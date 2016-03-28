@@ -2,15 +2,13 @@
 
 Simple lightweight library that works out of the box implementing [Bottom navigation component of Material Design guidelines](https://www.google.com/design/spec/components/bottom-navigation.html)
 
-  Three items 
+ 
   
-  ![3](http://i.imgur.com/uQjIy1O.gif)
+  [Three items](http://i.imgur.com/uQjIy1O.gif)
   
-  Shifting mode off with more than 3 items:
+  [Shifting mode off with more than 3 items](http://i.imgur.com/OrADI77.gif)
   
-  ![no](http://i.imgur.com/OrADI77.gif)
-  
-  Shifting mode on with more than 3 items: to be posted soon
+  [Shifting mode on with more than 3 items] (https://fat.gfycat.com/UnsteadyGrotesqueCoral.webm)
   
   Tablet mode:
   
