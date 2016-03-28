@@ -2,11 +2,16 @@
 
 Simple lightweight library that works out of the box implementing [Bottom navigation component of Material Design guidelines](https://www.google.com/design/spec/components/bottom-navigation.html)
 
-  Three items http://i.imgur.com/uQjIy1O.webm
+  Three items 
+  (http://i.imgur.com/uQjIy1O.webm "Three items")
   
   Shifting mode off with more than 3 items: to be posted soon
   
   Shifting mode on with more than 3 items: to be posted soon
+  
+  Tablet mode:
+  
+  ![](https://raw.githubusercontent.com/NikolaDespotoski/BottomNavigationLayout/master/tablet_mode.png "Tablet support")
 
 # Usage 
 1. Add jitpack.io to your project gradle:
@@ -80,12 +85,33 @@ Add this library to your module gradle dependencies:
                         .build());
         tabLayout.populateBottomTabItems(builder);
 ```
+4. Tablet mode
+ 
+In order to offset the content from BottomNavigatonLayout direct child of the CoordinatorLayout must use the provided tablet behavior like:
+
+````
+  <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        app:layout_behavior="@string/bottom_bar_tablet_behavior"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        </FrameLayout>
+    </android.support.v4.widget.NestedScrollView>
+    
+````
 
 #Notes
 
 1. Number of items must be between 3 and 5 according to Material Design Bottom Navigation Guidelines
 2. Shifting mode is on when the number of bottom items is greater than 3
-3. This library does not handle cross fade between top-level sections when item is clicked
+3. This library does not handle cross fade between top-level sections when item is clicked.
+4. Incomplete support to preHoneycomb.
 
 
 If you spot any oddities please open an issue! Thanks!
