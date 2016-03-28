@@ -64,6 +64,7 @@ public class DrawShadowFrameLayout extends FrameLayout {
         updateShadowBounds();
     }
 
+
     private void updateShadowBounds() {
         if (mShadowDrawable != null && !isTablet) {
             mShadowDrawable.setBounds(0, 0, mWidth, mShadowElevation);

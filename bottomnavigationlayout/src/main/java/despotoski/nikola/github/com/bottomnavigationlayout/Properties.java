@@ -20,7 +20,6 @@ package despotoski.nikola.github.com.bottomnavigationlayout;
 
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.support.v4.view.ViewCompat;
 import android.util.Property;
 import android.util.TypedValue;
 import android.view.View;
@@ -61,7 +60,6 @@ final class Properties {
         @Override
         public void set(TextView object, Integer value) {
             object.getPaint().setAlpha(value);
-            ViewCompat.postInvalidateOnAnimation(object);
         }
     };
     private static final String VIEW_WIDTH_NAME = "view_width";

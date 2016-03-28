@@ -30,7 +30,6 @@ import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.view.menu.MenuBuilder;
@@ -106,7 +105,6 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     private void initalize(Context context, AttributeSet attrs) {
         bringToFront();
-
         mMaxContainerHeight = (int) getResources().getDimension(R.dimen.bottom_navigation_height);
         if (isTablet) {
             setShadowVisible(false);
@@ -258,10 +256,17 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         return getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
+    /**
+     *
+     * @return Returns true when shifting mode is enabled, false when disabled
+     */
     public boolean isShiftingMode() {
         return mShiftingMode;
     }
 
+    /**
+     * @param mShiftingMode boolean value to disable or enable shifting mode. Shifting value set to true is overriden if the number of items is 3.
+     */
     public void setShiftingMode(boolean mShiftingMode) {
         this.mShiftingMode = mShiftingMode;
         updateBottomNavViews();
@@ -272,6 +277,10 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         return longest / mContainer.getChildCount();
     }
 
+    /**
+     * @param menuResId              Menu resource from which bottom navigation items will be generated
+     * @param parentBackgroundColors Color associated with each menu item in provide menuResId res id, size must be equal to the number of menu items.
+     */
     public void setBottomTabs(@MenuRes int menuResId, int[] parentBackgroundColors) {
         if (menuResId != View.NO_ID) {
             MenuBuilder menuBuilder = new MenuBuilder(getContext());
@@ -316,20 +325,25 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         mContainer.addView(tabView, generateBottomItemLayoutParams());
         mBottomTabViews.add(tabView);
     }
-    /* Method for manually selecting bottom navigation item
-     * @param selectedItemPosition index of item (zero based)
-     *
-     */
 
+    /**
+     * Method for manually selecting navigation item index (zero  based)
+     *
+     * @param selectedItemPosition
+     */
     public void setSelectedItemPosition(int selectedItemPosition) {
         mSelectedItemPosition = selectedItemPosition;
         updateBottomNavViews();
     }
 
-    private void removeAllTabs() {
+    /**
+     * Removes all items in container
+     */
+    public void removeAllTabs() {
         for (int i = mContainer.getChildCount() - 1; i >= 0; i--) {
             mContainer.removeViewAt(i);
         }
+        mCurrentNavigationItem = null;
     }
 
     @Override
@@ -338,26 +352,11 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         updateBottomNavViews();
     }
 
-    public void wrapSnackbar(@NonNull Snackbar snackbar) {
-        if (!snackbar.isShown()) {
 
-            final View snackBarView = snackbar.getView();
-            final CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) snackBarView.getLayoutParams();
-
-            params.setMargins(params.leftMargin,
-                    params.topMargin,
-                    params.rightMargin,
-                    params.bottomMargin + getMeasuredHeight() * 2);
-
-            snackBarView.setLayoutParams(params);
-            snackbar.show();
-        }
-    }
-
-    /*  Convinient way to populate bottom navigation layout using MenuBulder
+    /**
+     * Convinient way to populate bottom navigation layout using BottomTabsBuilder
      *
-     *  @param BottomTabsBuilder builder,
-     *
+     * @param builder Must not be null, will throw IllegalArgumentException, if number of items is less than 3 and greater than 5
      */
 
     public void populateBottomTabItems(@NonNull BottomTabsBuilder builder) {
@@ -407,23 +406,35 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     }
 
-    public void setEnableScrollingBehavior(boolean enable){
-        BottomNavigationBehavior.from(this).setScrollingEnabled(enable);
+    /**
+     * @param enable Disables translation of layout when scrolled. This has no effect if the BottomNavigationBehavior is removed from this Layout
+     */
+    public void setEnableScrollingBehavior(boolean enable) {
+        BottomNavigationBehavior<BottomTabLayout> bottomTabLayoutBottomNavigationBehavior = BottomNavigationBehavior.from(this);
+        if (bottomTabLayoutBottomNavigationBehavior != null) {
+            bottomTabLayoutBottomNavigationBehavior.setScrollingEnabled(enable);
+        }
     }
+
     final View getRevealOverlayView() {
         return mRevealOverlayView;
     }
 
-
+    /**
+     * @param onNavigationItemSelectionListener Callback of bottom navigation item selection
+     */
     public void setOnNavigationItemSelectionListener(OnNavigationItemSelectionListener onNavigationItemSelectionListener) {
         this.onNavigationItemSelectionListener = onNavigationItemSelectionListener;
     }
 
+    /**
+     * @param activeColor Color resource for active item color filter
+     */
     public void setActiveItemColorResource(@ColorRes int activeColor) {
         mActiveColorFilter = activeColor;
     }
 
-    public BottomNavigationItem getPreviouslySelectedItem() {
+    BottomNavigationItem getPreviouslySelectedItem() {
         return mPreviouslySelectedItem;
     }
 
@@ -438,7 +449,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
         private ArrayList<BottomNavigationItem> mNavItems;
 
-        public BottomTabsBuilder addBottomNavigationItem(BottomNavigationItem bottomNavigationItem) {
+        public BottomTabsBuilder addBottomNavigationItem(@NonNull BottomNavigationItem bottomNavigationItem) {
             ensureList();
             mNavItems.add(bottomNavigationItem);
             return this;
