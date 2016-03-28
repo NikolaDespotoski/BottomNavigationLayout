@@ -20,6 +20,7 @@ package despotoski.nikola.github.com.sample;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -47,7 +48,7 @@ public class TextFragment extends Fragment {
         view.findViewById(R.id.show_snack_bar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(getView(), "Test snackbar", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(getActivity().findViewById(R.id.tabs), "Test snackbar", Snackbar.LENGTH_LONG).show();
             }
         });
         TextView itemText = (TextView) view.findViewById(R.id.item_text);

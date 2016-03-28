@@ -29,7 +29,7 @@ import com.nineoldandroids.util.Property;
 /**
  * Created by nikola on 3/25/16.
  */
-public class PrehistoricProperties {
+class PrehistoricProperties {
     private static final String PADDING_TOP_NAME = "paddingTop";
     public static final Property<View, Integer> PADDING_TOP = new IntProperty<View>(Integer.class, PADDING_TOP_NAME) {
         @Override

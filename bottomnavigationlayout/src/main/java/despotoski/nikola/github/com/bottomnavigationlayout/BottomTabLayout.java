@@ -69,7 +69,9 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
                 mCurrentNavigationItem.setSelected(false);
                 if (onNavigationItemSelectionListener != null) {
                     onNavigationItemSelectionListener.onBottomNavigationItemSelected((BottomNavigationItem) v.getTag());
-                    onNavigationItemSelectionListener.onBottomNavigationItemUnselected((BottomNavigationItem) mCurrentNavigationItem.getTag());
+                    mPreviouslySelectedItem = (BottomNavigationItem) mCurrentNavigationItem.getTag();
+                    onNavigationItemSelectionListener.onBottomNavigationItemUnselected(mPreviouslySelectedItem);
+
                 }
             }
             mCurrentNavigationItem = v;
@@ -82,6 +84,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     private int mInactiveTextColor;
     private boolean isTablet;
     private int mMaxContainerHeight;
+    private BottomNavigationItem mPreviouslySelectedItem;
 
     public BottomTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -102,6 +105,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     }
 
     private void initalize(Context context, AttributeSet attrs) {
+        bringToFront();
 
         mMaxContainerHeight = (int) getResources().getDimension(R.dimen.bottom_navigation_height);
         if (isTablet) {
@@ -417,6 +421,10 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     public void setActiveItemColorResource(@ColorRes int activeColor) {
         mActiveColorFilter = activeColor;
+    }
+
+    public BottomNavigationItem getPreviouslySelectedItem() {
+        return mPreviouslySelectedItem;
     }
 
     public interface OnNavigationItemSelectionListener {

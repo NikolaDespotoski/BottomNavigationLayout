@@ -20,17 +20,22 @@ package despotoski.nikola.github.com.bottomnavigationlayout;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 
 /**
@@ -41,13 +46,29 @@ final class Util {
     public static void runOnAttachedToLayout(View v, final Runnable runnable) {
         if (ViewCompat.isLaidOut(v)) runnable.run();
         else {
-            v.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    runnable.run();
-                    v.removeOnLayoutChangeListener(this);
-                }
-            });
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                v.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                    @Override
+                    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                        runnable.run();
+                        v.removeOnLayoutChangeListener(this);
+                    }
+                });
+                return;
+            }
+
+            final ViewTreeObserver viewTreeObserver = v.getViewTreeObserver();
+            if (viewTreeObserver != null && viewTreeObserver.isAlive()) {
+                viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        runnable.run();
+                        if (viewTreeObserver.isAlive())
+                            viewTreeObserver.removeGlobalOnLayoutListener(this);
+                    }
+                });
+            }
         }
     }
 
@@ -104,6 +125,7 @@ final class Util {
         return navBarHeight;
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static void playTogether(Animator... animators) {
         AnimatorSet set = new AnimatorSet();
         set.playTogether(animators);
@@ -116,6 +138,15 @@ final class Util {
         } else {
             //noinspection deprecation
             view.setBackgroundDrawable(drawable);
+        }
+    }
+
+
+    public static void setColorToColorDrawable(ColorDrawable color, int colorValue) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            color.setColor(colorValue);
+        } else {
+            color.setColorFilter(colorValue, PorterDuff.Mode.MULTIPLY);
         }
     }
 }

@@ -20,10 +20,12 @@ package despotoski.nikola.github.com.bottomnavigationlayout;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
+import android.support.v4.view.ViewPropertyAnimatorUpdateListener;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.View;
@@ -35,6 +37,7 @@ import android.view.animation.Interpolator;
  */
 public final class BottomNavigationBehavior<V extends View> extends VerticalScrollingBehavior<V> {
     private static final Interpolator INTERPOLATOR = new LinearOutSlowInInterpolator();
+    private final BottomNavigationWithSnackbar mWithSnackBarImpl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new LollipopBottomNavWithSnackBarImpl() : new PreLollipopBottomNavWithSnackBarImpl();
     private boolean isTablet;
     private int mTabLayoutId;
     private boolean hidden = false;
@@ -73,16 +76,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
 
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, V child, View dependency) {
-        if (!isTablet && dependency instanceof Snackbar.SnackbarLayout) {
-            if (mSnackbarHeight == -1) {
-                mSnackbarHeight = dependency.getHeight();
-            }
-            int targetPadding = (int) (mSnackbarHeight +
-                    child.getContext().getResources().getDimension(R.dimen.bottom_navigation_height));
-            dependency.setPadding(dependency.getPaddingLeft(),
-                    dependency.getPaddingTop(), dependency.getPaddingRight(), targetPadding
-            );
-        }
+        mWithSnackBarImpl.updateSnackbar(dependency, child);
         return dependency instanceof Snackbar.SnackbarLayout;
     }
 
@@ -180,5 +174,48 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
 
     public void setScrollingEnabled(boolean scrollingEnabled) {
         this.scrollingEnabled = scrollingEnabled;
+    }
+
+    private interface BottomNavigationWithSnackbar {
+        void updateSnackbar(View dependency, View child);
+    }
+
+    private class PreLollipopBottomNavWithSnackBarImpl implements BottomNavigationWithSnackbar {
+
+        @Override
+        public void updateSnackbar(View dependency, View child) {
+            if (!isTablet && dependency instanceof Snackbar.SnackbarLayout) {
+                if (mSnackbarHeight == -1) {
+                    mSnackbarHeight = dependency.getHeight();
+                }
+
+                int targetPadding =
+                        (int) child.getContext().getResources().getDimension(R.dimen.bottom_navigation_height);
+                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) dependency.getLayoutParams();
+                layoutParams.bottomMargin = targetPadding;
+                child.bringToFront();
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT){
+                    child.postInvalidate();
+                }
+
+            }
+        }
+    }
+
+    private class LollipopBottomNavWithSnackBarImpl implements BottomNavigationWithSnackbar {
+
+        @Override
+        public void updateSnackbar(View dependency, View child) {
+            if (!isTablet && dependency instanceof Snackbar.SnackbarLayout) {
+                if (mSnackbarHeight == -1) {
+                    mSnackbarHeight = dependency.getHeight();
+                }
+                int targetPadding = (int) (mSnackbarHeight +
+                        child.getContext().getResources().getDimension(R.dimen.bottom_navigation_height));
+                dependency.setPadding(dependency.getPaddingLeft(),
+                        dependency.getPaddingTop(), dependency.getPaddingRight(), targetPadding
+                );
+            }
+        }
     }
 }

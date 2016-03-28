@@ -38,6 +38,8 @@ import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
+import android.support.v4.widget.TextViewCompat;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -50,12 +52,21 @@ import android.widget.TextView;
 /**
  * Created by Nikola on 3/23/2016.
  */
-public final class BottomNavigationTextView extends TextView implements BottomNavigation{
+public final class BottomNavigationTextView extends TextView implements BottomNavigation {
 
 
     private static final float ACTIVE_TEXT_SIZE = 14;
     private static final float INACTIVE_TEXT_SIZE = 12;
     private static final long ANIMATION_DURATION = 200;
+    private final RevealViewAnimator mRevealViewImpl =
+            Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT ?
+                    new LollipopRevealViewAnimator() :
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
+                            new PreKitkatRevealViewImpl() :
+                            new PrehistoricRevealViewImpl();
+    private final AnimatorCompat mSelectionAnimator =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
+                    new NewEraAnimator() : new PreHistoricAnimator();
     private String mText;
     private int mIcon;
     private int mParentBackgroundColor;
@@ -68,15 +79,6 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
     private int mActiveViewWidth;
     private int mInactiveWidth;
     private int mInactiveTextColor;
-    private final RevealViewAnimator mRevealViewImpl =
-            Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT ?
-            new LollipopRevealViewAnimator() :
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
-                    new PreKitkatRevealViewImpl() :
-                    new PrehistoricRevealViewImpl();
-    private final AnimatorCompat mSelectionAnimator =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
-                    new NewEraAnimator() : new PreHistoricAnimator();
     private float mOriginalTextSize;
     private boolean isTablet;
 
@@ -172,9 +174,10 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
         return ((ViewGroup) getParent()).getChildCount() == 3;
     }
 
-    @Override
+
     public void setTextIsSelectable(boolean selectable) {
-        super.setTextIsSelectable(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+            super.setTextIsSelectable(false);
     }
 
     @Override
@@ -244,26 +247,26 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
     }
 
     private ColorDrawable getColorDrawable(View view) {
-        return view.getBackground() != null && view.getBackground() instanceof ColorDrawable? ((ColorDrawable) view.getBackground()) : new ColorDrawable(Color.WHITE);
+        return view.getBackground() != null && view.getBackground() instanceof ColorDrawable ? ((ColorDrawable) view.getBackground()) : new ColorDrawable(Color.WHITE);
     }
 
     public void setInactiveTextColorResource(@ColorRes int inactiveTextColor) {
         this.mInactiveTextColor = ContextCompat.getColor(getContext(), inactiveTextColor);
     }
 
-    public void setInactiveTextColor(@ColorInt int inactiveTextColor) {
-        this.mInactiveTextColor = inactiveTextColor;
-        setTextColor(!isSelected() ? mInactiveTextColor : getCurrentTextColor());
-    }
-
     @Override
     public void setShiftingModeEnabled(boolean shiftingModeEnabled) {
-            mShiftingMode = shiftingModeEnabled;
+        mShiftingMode = shiftingModeEnabled;
     }
 
     @ColorInt
     public int getInactiveTextColor() {
         return mInactiveTextColor;
+    }
+
+    public void setInactiveTextColor(@ColorInt int inactiveTextColor) {
+        this.mInactiveTextColor = inactiveTextColor;
+        setTextColor(!isSelected() ? mInactiveTextColor : getCurrentTextColor());
     }
 
     void setIsTablet(boolean isTablet) {
@@ -291,6 +294,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
 
         private final TimeInterpolator INTERPOLATOR = new FastOutLinearInInterpolator();
 
+        @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
         @Override
         public void animateSelection(float textSize, float targetTextSize) {
             boolean isAlwaysTextShown = ((ViewGroup) getParent()).getChildCount() == 3;
@@ -341,6 +345,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
             startObjectAnimator(objectAnimator);
         }
 
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
         private void startObjectAnimator(ObjectAnimator objectAnimator) {
             objectAnimator.setInterpolator(INTERPOLATOR);
             objectAnimator.setDuration(ANIMATION_DURATION);
@@ -350,6 +355,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
 
     private class PreHistoricAnimator implements AnimatorCompat {
         private final Interpolator INTERPOLATOR = new FastOutLinearInInterpolator();
+
         @Override
         public void animateSelection(float textSize, float targetTextSize) {
             boolean isAlwaysTextShown = ((ViewGroup) getParent()).getChildCount() == 3;
@@ -402,6 +408,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
             objectAnimator.setInterpolator(new FastOutLinearInInterpolator());
             objectAnimator.start();
         }
+
         private void startObjectAnimator(com.nineoldandroids.animation.ObjectAnimator objectAnimator) {
             objectAnimator.setInterpolator(INTERPOLATOR);
             objectAnimator.setDuration(ANIMATION_DURATION);
@@ -409,6 +416,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private class LollipopRevealViewAnimator implements RevealViewAnimator {
         private final TypeEvaluator ARGB_EVALUATOR = new ArgbEvaluator();
 
@@ -454,12 +462,21 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
             final BottomTabLayout topParent = (BottomTabLayout) getParent().getParent();
             final View revealView = topParent.getRevealOverlayView();
             final ColorDrawable color = getColorDrawable(revealView);
-            com.nineoldandroids.animation.ValueAnimator rgb = com.nineoldandroids.animation.ObjectAnimator.ofInt(color.getColor(), mParentBackgroundColor);
+            int colorInt;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+                colorInt = color.getColor();
+            } else if (topParent.getPreviouslySelectedItem() != null) {
+                colorInt = topParent.getPreviouslySelectedItem().getParentColorBackgroundColor();
+            }else{
+                colorInt = Color.TRANSPARENT;
+            }
+            com.nineoldandroids.animation.ValueAnimator rgb = com.nineoldandroids.animation.ObjectAnimator.ofInt(colorInt, mParentBackgroundColor);
             rgb.setEvaluator(ARGB_EVALUATOR_COMPAT);
             rgb.addUpdateListener(new com.nineoldandroids.animation.ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(com.nineoldandroids.animation.ValueAnimator a) {
-                    color.setColor((Integer)a.getAnimatedValue());
+
+                    Util.setColorToColorDrawable(color, (Integer) a.getAnimatedValue());
                     Util.setBackground(topParent, color);
                 }
             });
@@ -467,8 +484,10 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private class PreKitkatRevealViewImpl implements RevealViewAnimator {
         private final TypeEvaluator ARGB_EVALUATOR = new ArgbEvaluator();
+
 
         @Override
         public void animateBackground() {
@@ -479,7 +498,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
             rgb.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator a) {
-                    color.setColor((Integer)a.getAnimatedValue());
+                    color.setColor((Integer) a.getAnimatedValue());
                     Util.setBackground(topParent, color);
                 }
             });
