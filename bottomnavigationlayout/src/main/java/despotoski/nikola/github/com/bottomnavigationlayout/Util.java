@@ -146,7 +146,7 @@ final class Util {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             color.setColor(colorValue);
         } else {
-            color.setColorFilter(colorValue, PorterDuff.Mode.MULTIPLY);
+            color.setColorFilter(colorValue, PorterDuff.Mode.SRC_ATOP);
         }
     }
 }
