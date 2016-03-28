@@ -176,6 +176,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
         this.scrollingEnabled = scrollingEnabled;
     }
 
+
     private interface BottomNavigationWithSnackbar {
         void updateSnackbar(View dependency, View child);
     }
@@ -189,12 +190,13 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
                     mSnackbarHeight = dependency.getHeight();
                 }
 
-                int targetPadding =
-                        (int) child.getContext().getResources().getDimension(R.dimen.bottom_navigation_height);
+                int targetPadding = child.getMeasuredHeight();
+
+                int shadow = ((BottomTabLayout) child).getShadowElevation();
                 ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) dependency.getLayoutParams();
-                layoutParams.bottomMargin = targetPadding;
+                layoutParams.bottomMargin = targetPadding - shadow;
                 child.bringToFront();
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT){
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                     child.postInvalidate();
                 }
 
@@ -210,8 +212,8 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
                 if (mSnackbarHeight == -1) {
                     mSnackbarHeight = dependency.getHeight();
                 }
-                int targetPadding = (int) (mSnackbarHeight +
-                        child.getContext().getResources().getDimension(R.dimen.bottom_navigation_height));
+                int targetPadding = (mSnackbarHeight +
+                        child.getMeasuredHeight());
                 dependency.setPadding(dependency.getPaddingLeft(),
                         dependency.getPaddingTop(), dependency.getPaddingRight(), targetPadding
                 );

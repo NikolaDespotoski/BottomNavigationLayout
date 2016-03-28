@@ -18,6 +18,8 @@
 
 package despotoski.nikola.github.com.bottomnavigationlayout;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.util.Property;
 import android.util.TypedValue;
@@ -27,6 +29,8 @@ import android.widget.TextView;
 /**
  * Created by Nikola on 3/24/2016.
  */
+
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 final class Properties {
     private static final String PADDING_TOP_NAME = "paddingTop";
     public static final Property<View, Integer> PADDING_TOP = new IntProperty<View>(Integer.class, PADDING_TOP_NAME) {
