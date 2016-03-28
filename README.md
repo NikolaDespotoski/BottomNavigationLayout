@@ -4,11 +4,11 @@ Simple lightweight library that works out of the box implementing [Bottom naviga
 
   Three items 
   
-  !(http://i.imgur.com/uQjIy1O.webm )
+  ![](http://i.imgur.com/uQjIy1O.webm )
   
   Shifting mode off with more than 3 items:
   
-  !(http://i.imgur.com/OrADI77.gifv)
+  ![](http://i.imgur.com/OrADI77.gifv)
   
   Shifting mode on with more than 3 items: to be posted soon
   
