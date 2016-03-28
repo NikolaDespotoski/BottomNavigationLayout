@@ -79,8 +79,8 @@ public abstract class VerticalScrollingBehavior<V extends View> extends Coordina
 
 
     /**
-     * @param coordinatorLayout
-     * @param child
+     * @param coordinatorLayout CoordinatoyLayout parent
+     * @param child             View child
      * @param direction         Direction of the overscroll: SCROLL_DIRECTION_UP, SCROLL_DIRECTION_DOWN
      * @param currentOverScroll Unconsumed value, negative or positive based on the direction;
      * @param totalOverScroll   Cumulative value for current direction

@@ -40,7 +40,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
     <TextView
-        android:id="@+id/long_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/long_text"

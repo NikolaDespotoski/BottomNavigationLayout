@@ -329,7 +329,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     /**
      * Method for manually selecting navigation item index (zero  based)
      *
-     * @param selectedItemPosition
+     * @param selectedItemPosition Zero based index for item position
      */
     public void setSelectedItemPosition(int selectedItemPosition) {
         mSelectedItemPosition = selectedItemPosition;
@@ -400,7 +400,6 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         bottomNavigationTextView.setSelected(true);
         mCurrentNavigationItem = bottomNavigationTextView;
         if (callListener) {
-            callListener = false;
             mBottomTabSelectionClickListener.onClick(mCurrentNavigationItem);
         }
 
