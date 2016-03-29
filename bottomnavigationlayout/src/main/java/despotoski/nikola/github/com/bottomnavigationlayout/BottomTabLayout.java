@@ -52,6 +52,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     static final float MAX_ITEM_WIDTH = 168f;
     private static final int MAX_BOTTOM_NAVIGATION_ITEMS = 5;
     private static final int MIN_BOTTOM_NAVIGATION_ITEMS = 3;
+    private final List<View> mBottomTabViews = new ArrayList<>(MAX_BOTTOM_NAVIGATION_ITEMS);
     private int[] mParentBackgroundColors;
     private View mRevealOverlayView;
     private LinearLayoutCompat mContainer;
@@ -59,32 +60,32 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     private int mSelectedItemPosition = View.NO_ID;
     private View mCurrentNavigationItem;
     private boolean mAlwaysShowText = false;
-    private BottomTabLayout.OnNavigationItemSelectionListener onNavigationItemSelectionListener;
-    private final OnClickListener mBottomTabSelectionClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (!v.isSelected()) {
-                v.setSelected(true);
-                mCurrentNavigationItem.setSelected(false);
-                if (mNavigationItemSelectionListeners != null) {
-                    dispatchItemSelected((BottomNavigationItem) v.getTag());
-                    mPreviouslySelectedItem = (BottomNavigationItem) mCurrentNavigationItem.getTag();
-                    dispatchItemUnselected(mPreviouslySelectedItem);
-
-                }
-            }
-            mCurrentNavigationItem = v;
-        }
-    };
     private int mMinBottomItemWidth;
     private boolean mShiftingMode;
-    private final List<View> mBottomTabViews = new ArrayList<>(MAX_BOTTOM_NAVIGATION_ITEMS);
     private int mMaxItemWidth;
     private int mInactiveTextColor;
     private boolean isTablet;
     private int mMaxContainerHeight;
     private BottomNavigationItem mPreviouslySelectedItem;
     private List<OnNavigationItemSelectionListener> mNavigationItemSelectionListeners;
+    private final OnClickListener mBottomTabSelectionClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (!v.isSelected()) {
+                v.setSelected(true);
+                if (mCurrentNavigationItem != null) {
+                    mCurrentNavigationItem.setSelected(false);
+                    mPreviouslySelectedItem = (BottomNavigationItem) mCurrentNavigationItem.getTag();
+                    dispatchItemUnselected(mPreviouslySelectedItem);
+                }
+                if (mNavigationItemSelectionListeners != null) {
+                    dispatchItemSelected((BottomNavigationItem) v.getTag());
+
+                }
+            }
+            mCurrentNavigationItem = v;
+        }
+    };
 
     public BottomTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -102,6 +103,12 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         super(context, attrs);
         isTablet = getResources().getBoolean(R.bool.isTablet);
         initalize(context, attrs);
+    }
+
+    private static void checkBottomItemGuidelines(int count) {
+        if (count < MIN_BOTTOM_NAVIGATION_ITEMS || count > MAX_BOTTOM_NAVIGATION_ITEMS) {
+            throw new IllegalArgumentException("Number of bottom navigation items should between 3 and 5, count: " + count);
+        }
     }
 
     private void initalize(Context context, AttributeSet attrs) {
@@ -153,12 +160,6 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
             }
         });
         a.recycle();
-    }
-
-    private static void checkBottomItemGuidelines(int count) {
-        if (count < MIN_BOTTOM_NAVIGATION_ITEMS || count > MAX_BOTTOM_NAVIGATION_ITEMS) {
-            throw new IllegalArgumentException("Number of bottom navigation items should between 3 and 5, count: " + count);
-        }
     }
 
     @Override
@@ -378,7 +379,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         Parcelable parcelable = super.onSaveInstanceState();
         SavedState savedState = new SavedState(parcelable);
         savedState.selectedPosition = mSelectedItemPosition;
-        return parcelable;
+        return savedState;
     }
 
     @Override
@@ -386,6 +387,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         super.onRestoreInstanceState(state);
         if (state instanceof SavedState) {
             mSelectedItemPosition = ((SavedState) state).selectedPosition;
+            selectTabView();
         }
     }
 
@@ -396,6 +398,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
                 mNavigationItemSelectionListeners.get(i).onBottomNavigationItemSelected(item);
             }
         }
+        mSelectedItemPosition = item.getPosition();
     }
 
     private void dispatchItemUnselected(BottomNavigationItem item) {
@@ -407,11 +410,17 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         }
     }
 
+    private void clearSelection() {
+        for (int i = mContainer.getChildCount() - 1; i >= 0; i--) {
+            mContainer.getChildAt(i).setSelected(false);
+        }
+    }
+
     private void selectTabView() {
         boolean callListener = false;
         if (mSelectedItemPosition == View.NO_ID) {
-            mSelectedItemPosition = 0;
             callListener = true;
+            mSelectedItemPosition = 0;
         }
         View bottomNavigationTextView = mBottomTabViews.get(mSelectedItemPosition);
         bottomNavigationTextView.requestFocus();
@@ -501,6 +510,16 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
 
     static class SavedState extends BaseSavedState {
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
+
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
         int selectedPosition;
 
         SavedState(Parcelable superState) {
@@ -517,17 +536,6 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
             super.writeToParcel(out, flags);
             out.writeInt(this.selectedPosition);
         }
-
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
-                    }
-
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-                };
     }
 }
 
