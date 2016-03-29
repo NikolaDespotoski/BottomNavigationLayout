@@ -19,7 +19,6 @@
 package despotoski.nikola.github.com.bottomnavigationlayout;
 
 
-import android.support.v4.view.ViewCompat;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
@@ -59,7 +58,6 @@ class PrehistoricProperties {
         @Override
         public void set(TextView object, Integer value) {
             object.getPaint().setAlpha(value);
-            ViewCompat.postInvalidateOnAnimation(object);
         }
     };
     private static final String VIEW_WIDTH_NAME = "view_width";

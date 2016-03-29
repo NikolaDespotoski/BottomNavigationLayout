@@ -476,6 +476,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
         public void animateBackground() {
             final BottomTabLayout topParent = (BottomTabLayout) getParent().getParent();
             final View revealView = topParent.getRevealOverlayView();
+            revealView.setBackgroundColor(Color.BLACK);
             final ColorDrawable color = getColorDrawable(revealView);
             int colorInt;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
@@ -483,7 +484,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
             } else if (topParent.getPreviouslySelectedItem() != null) {
                 colorInt = topParent.getPreviouslySelectedItem().getParentColorBackgroundColor();
             } else {
-                colorInt = Color.TRANSPARENT;
+                colorInt = mParentBackgroundColor;
             }
             com.nineoldandroids.animation.ValueAnimator rgb = com.nineoldandroids.animation.ObjectAnimator.ofInt(colorInt, mParentBackgroundColor);
             rgb.setEvaluator(ARGB_EVALUATOR_COMPAT);

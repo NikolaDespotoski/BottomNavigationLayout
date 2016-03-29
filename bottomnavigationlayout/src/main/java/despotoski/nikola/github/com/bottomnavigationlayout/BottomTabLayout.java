@@ -66,10 +66,10 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
             if (!v.isSelected()) {
                 v.setSelected(true);
                 mCurrentNavigationItem.setSelected(false);
-                if (onNavigationItemSelectionListener != null) {
-                    onNavigationItemSelectionListener.onBottomNavigationItemSelected((BottomNavigationItem) v.getTag());
+                if (mNavigationItemSelectionListeners != null) {
+                    dispatchItemSelected((BottomNavigationItem) v.getTag());
                     mPreviouslySelectedItem = (BottomNavigationItem) mCurrentNavigationItem.getTag();
-                    onNavigationItemSelectionListener.onBottomNavigationItemUnselected(mPreviouslySelectedItem);
+                    dispatchItemUnselected(mPreviouslySelectedItem);
 
                 }
             }
@@ -84,6 +84,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     private boolean isTablet;
     private int mMaxContainerHeight;
     private BottomNavigationItem mPreviouslySelectedItem;
+    private List<OnNavigationItemSelectionListener> mNavigationItemSelectionListeners;
 
     public BottomTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -257,7 +258,6 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     }
 
     /**
-     *
      * @return Returns true when shifting mode is enabled, false when disabled
      */
     public boolean isShiftingMode() {
@@ -389,6 +389,24 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         }
     }
 
+    private void dispatchItemSelected(BottomNavigationItem item) {
+        if (mNavigationItemSelectionListeners != null && mNavigationItemSelectionListeners.size() > 0) {
+            int count = mNavigationItemSelectionListeners.size();
+            for (int i = 0; i < count; i++) {
+                mNavigationItemSelectionListeners.get(i).onBottomNavigationItemSelected(item);
+            }
+        }
+    }
+
+    private void dispatchItemUnselected(BottomNavigationItem item) {
+        if (mNavigationItemSelectionListeners != null && mNavigationItemSelectionListeners.size() > 0) {
+            int count = mNavigationItemSelectionListeners.size();
+            for (int i = 0; i < count; i++) {
+                mNavigationItemSelectionListeners.get(i).onBottomNavigationItemUnselected(item);
+            }
+        }
+    }
+
     private void selectTabView() {
         boolean callListener = false;
         if (mSelectedItemPosition == View.NO_ID) {
@@ -422,8 +440,19 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     /**
      * @param onNavigationItemSelectionListener Callback of bottom navigation item selection
      */
-    public void setOnNavigationItemSelectionListener(OnNavigationItemSelectionListener onNavigationItemSelectionListener) {
-        this.onNavigationItemSelectionListener = onNavigationItemSelectionListener;
+    public void addOnNavigationItemSelectionListener(@NonNull OnNavigationItemSelectionListener onNavigationItemSelectionListener) {
+        ensureListenersList();
+        mNavigationItemSelectionListeners.add(onNavigationItemSelectionListener);
+    }
+
+    public boolean removeOnNavigationItemSelectionListener(@NonNull OnNavigationItemSelectionListener onNavigationItemSelectionListener) {
+        ensureListenersList();
+        return mNavigationItemSelectionListeners.remove(onNavigationItemSelectionListener);
+    }
+
+    private void ensureListenersList() {
+        if (mNavigationItemSelectionListeners == null)
+            mNavigationItemSelectionListeners = new ArrayList<>();
     }
 
     /**
@@ -433,7 +462,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         mActiveColorFilter = activeColor;
     }
 
-    BottomNavigationItem getPreviouslySelectedItem() {
+    final BottomNavigationItem getPreviouslySelectedItem() {
         return mPreviouslySelectedItem;
     }
 
