@@ -338,7 +338,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
      */
     public void setSelectedItemPosition(int selectedItemPosition) {
         mSelectedItemPosition = selectedItemPosition;
-        updateBottomNavViews();
+        selectTabView();
     }
 
     /**
@@ -435,8 +435,9 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     }
 
+
+
     /**
-     *
      * @param position Position of the bottom tab to be removed (0 based)
      */
     public void removeTabAt(int position) {
@@ -448,8 +449,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     }
 
     /**
-     *
-     * @param position  Position of the bottom tab to be removed (0 based)
+     * @param position        Position of the bottom tab to be removed (0 based)
      * @param removeAnimation Animation to be perfomed before tab being removed from its container
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -482,6 +482,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
             }
         }
     }
+
 
     /**
      * @param enable Disables translation of layout when scrolled. This has no effect if the BottomNavigationBehavior is removed from this Layout
