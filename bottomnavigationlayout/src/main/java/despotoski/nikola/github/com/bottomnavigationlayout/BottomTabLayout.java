@@ -477,7 +477,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         }
         if (mSelectedItemPosition == position) {
             mSelectedItemPosition = Math.max(0, mSelectedItemPosition - 1);
-            if (mContainer.getChildCount() != 0) {
+            if (mContainer.getChildCount() > 0) {
                 selectTabView();
             }
         }
