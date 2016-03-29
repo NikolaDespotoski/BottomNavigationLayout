@@ -419,8 +419,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
     private void selectTabView() {
         boolean callListener = false;
         if (mSelectedItemPosition == View.NO_ID) {
-            callListener = true;
-            mSelectedItemPosition = 0;
+            return;
         }
         View bottomNavigationTextView = mBottomTabViews.get(mSelectedItemPosition);
         bottomNavigationTextView.requestFocus();
