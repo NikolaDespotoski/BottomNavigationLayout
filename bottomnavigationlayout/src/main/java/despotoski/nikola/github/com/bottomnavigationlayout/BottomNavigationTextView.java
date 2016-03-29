@@ -287,10 +287,10 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
     @Override
     public void requestLayout() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            if(!isInLayout()){
+            if (!isInLayout()) {
                 super.requestLayout();
             }
-        }else if(ViewCompat.isLaidOut(this)){
+        } else if (ViewCompat.isLaidOut(this)) {
             super.requestLayout();
         }
     }
@@ -322,14 +322,14 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
             int paddingStart = getInactivePadding();
             int paddingEnd = mViewTopPaddingActive;
             if (!isSelected()) {
-                int temp = paddingEnd;
-                paddingEnd = paddingStart;
-                paddingStart = temp;
-                if(mAnimator != null && !mShiftingMode){
+                if (mAnimator != null && !mShiftingMode) {
                     mAnimator.addListener(mAnimatorListener);
                     mAnimator.reverse();
                     return;
                 }
+                int temp = paddingEnd;
+                paddingEnd = paddingStart;
+                paddingStart = temp;
             }
             startParentBackgroundColorAnimator();
             mAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
@@ -343,14 +343,14 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
             int alphaStart = 0;
             int alphaEnd = 255;
             if (!isSelected()) {
-                int a = alphaEnd;
-                alphaEnd = alphaStart;
-                alphaStart = a;
-                if(mAnimator != null && !mShiftingMode){
+                if (mAnimator != null && !mShiftingMode) {
                     mAnimator.addListener(mAnimatorListener);
                     mAnimator.reverse();
                     return;
                 }
+                int a = alphaEnd;
+                alphaEnd = alphaStart;
+                alphaStart = a;
             }
             mAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
                     PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
