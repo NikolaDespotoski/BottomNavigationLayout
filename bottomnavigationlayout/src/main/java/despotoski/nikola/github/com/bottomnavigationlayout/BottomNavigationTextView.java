@@ -284,6 +284,16 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
         this.isTablet = isTablet;
     }
 
+    @Override
+    public void requestLayout() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if(!isInLayout()){
+                super.requestLayout();
+            }
+        }else if(ViewCompat.isLaidOut(this)){
+            super.requestLayout();
+        }
+    }
 
     private interface RevealViewAnimator {
         void animateBackground();
@@ -293,9 +303,17 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
         void animateSelection(float textSize, float targetSize);
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private class NewEraAnimator implements AnimatorCompat {
 
         private final TimeInterpolator INTERPOLATOR = new FastOutLinearInInterpolator();
+        private ObjectAnimator mAnimator;
+        private Animator.AnimatorListener mAnimatorListener = new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mAnimator = null;
+            }
+        };
 
         @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
         @Override
@@ -307,14 +325,19 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
                 int temp = paddingEnd;
                 paddingEnd = paddingStart;
                 paddingStart = temp;
+                if(mAnimator != null && !mShiftingMode){
+                    mAnimator.addListener(mAnimatorListener);
+                    mAnimator.reverse();
+                    return;
+                }
             }
             startParentBackgroundColorAnimator();
-            ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
+            mAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
                     PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
                     PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize));
             mShiftingMode = mShiftingMode && !isAlwaysTextShown;
             if (isAlwaysTextShown && !mShiftingMode) {
-                startObjectAnimator(objectAnimator);
+                startObjectAnimator(mAnimator);
                 return;
             }
             int alphaStart = 0;
@@ -323,13 +346,18 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
                 int a = alphaEnd;
                 alphaEnd = alphaStart;
                 alphaStart = a;
+                if(mAnimator != null && !mShiftingMode){
+                    mAnimator.addListener(mAnimatorListener);
+                    mAnimator.reverse();
+                    return;
+                }
             }
-            objectAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
+            mAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
                     PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
                     PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize),
                     PropertyValuesHolder.ofInt(Properties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd));
             if (!mShiftingMode) {
-                startObjectAnimator(objectAnimator);
+                startObjectAnimator(mAnimator);
                 return;
             }
             ensureInactiveViewWidth();
@@ -340,12 +368,12 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
                 widthEnd = widthStart;
                 widthStart = a;
             }
-            objectAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
+            mAnimator = ObjectAnimator.ofPropertyValuesHolder(BottomNavigationTextView.this,
                     PropertyValuesHolder.ofInt(Properties.PADDING_TOP, paddingStart, paddingEnd),
                     PropertyValuesHolder.ofFloat(Properties.TEXT_SIZE, textSize, targetTextSize),
                     PropertyValuesHolder.ofInt(Properties.TEXT_PAINT_ALPHA, alphaStart, alphaEnd),
                     PropertyValuesHolder.ofInt(Properties.VIEW_WIDTH, widthStart, widthEnd));
-            startObjectAnimator(objectAnimator);
+            startObjectAnimator(mAnimator);
         }
 
         @TargetApi(Build.VERSION_CODES.HONEYCOMB)
