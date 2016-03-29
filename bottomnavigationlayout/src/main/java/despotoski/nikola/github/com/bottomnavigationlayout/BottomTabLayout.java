@@ -18,11 +18,15 @@
 
 package despotoski.nikola.github.com.bottomnavigationlayout;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.ColorRes;
@@ -429,6 +433,54 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
             mBottomTabSelectionClickListener.onClick(mCurrentNavigationItem);
         }
 
+    }
+
+    /**
+     *
+     * @param position Position of the bottom tab to be removed (0 based)
+     */
+    public void removeTabAt(int position) {
+        ensureListenersList();
+        View removedTab = mBottomTabViews.remove(position);
+        if (removedTab != null) {
+            removeTabInternal(removedTab, position);
+        }
+    }
+
+    /**
+     *
+     * @param position  Position of the bottom tab to be removed (0 based)
+     * @param removeAnimation Animation to be perfomed before tab being removed from its container
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public void removeTabAt(final int position, @NonNull Animator removeAnimation) {
+        ensureListenersList();
+        final View removedTab = mBottomTabViews.remove(position);
+        if (removedTab != null) {
+            removeAnimation.setTarget(removedTab);
+            removeAnimation.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    removeTabInternal(removedTab, position);
+                }
+            });
+            removeAnimation.start();
+        }
+    }
+
+    private void removeTabInternal(View removedTab, int position) {
+        mContainer.removeView(removedTab);
+        mBottomTabViews.clear();
+        int newCount = mContainer.getChildCount();
+        for (int i = 0; i < newCount; i++) {
+            mBottomTabViews.add(i, mContainer.getChildAt(position));
+        }
+        if (mSelectedItemPosition == position) {
+            mSelectedItemPosition = Math.max(0, mSelectedItemPosition - 1);
+            if (mContainer.getChildCount() != 0) {
+                selectTabView();
+            }
+        }
     }
 
     /**
