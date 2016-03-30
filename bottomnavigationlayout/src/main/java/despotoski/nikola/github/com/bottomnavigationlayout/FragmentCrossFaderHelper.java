@@ -32,7 +32,7 @@ public abstract class FragmentCrossFaderHelper implements BottomTabLayout.OnNavi
     public FragmentCrossFaderHelper(@IdRes int fragmentContainer, BottomTabLayout bottomTabLayout, BottomTabLayout.OnNavigationItemSelectionListener listener) {
         mListenerRef = new WeakReference<>(listener);
         mBottomTabLayout = bottomTabLayout;
-        mBottomTabLayout.setOnNavigationItemSelectionListener(this);
+        mBottomTabLayout.addOnNavigationItemSelectionListener(this);
     }
 
     @Override

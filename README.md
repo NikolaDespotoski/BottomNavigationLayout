@@ -27,7 +27,7 @@ allprojects {
 
  2.  Add this library to your module gradle dependencies: 
 ```
- compile 'com.github.NikolaDespotoski:BottomNavigationLayout:0.4.3'
+ compile 'com.github.NikolaDespotoski:BottomNavigationLayout:0.4.+'
 ```
  3. In xml layout resource
 

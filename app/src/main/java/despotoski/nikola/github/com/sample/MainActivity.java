@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity implements BottomTabLayout.O
         LeakCanary.install(getApplication());
         setContentView(R.layout.activity_main);
         BottomTabLayout tabLayout = (BottomTabLayout) findViewById(R.id.tabs);
-        tabLayout.setOnNavigationItemSelectionListener(this);
+        tabLayout.addOnNavigationItemSelectionListener(this);
         tabLayout.setShiftingMode(true);
         tabLayout.setActiveItemColorResource(R.color.active_color);
         BottomTabLayout.BottomTabsBuilder builder = new BottomTabLayout.BottomTabsBuilder();

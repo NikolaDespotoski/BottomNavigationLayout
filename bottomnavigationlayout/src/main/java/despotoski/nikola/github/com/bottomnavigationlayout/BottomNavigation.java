@@ -29,4 +29,5 @@ public interface BottomNavigation {
     void setActiveColor(@ColorInt int activeColor);
     void setInactiveTextColor(@ColorInt int inactiveTextColor);
     void setShiftingModeEnabled(boolean shiftingModeEnabled);
+
 }
