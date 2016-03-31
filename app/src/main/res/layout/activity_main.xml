@@ -1,5 +1,6 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinatorlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,6 +9,7 @@
         android:layout_height="match_parent">
 
         <FrameLayout
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -15,17 +17,27 @@
         </FrameLayout>
     </android.support.v4.widget.NestedScrollView>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_android_white_24dp"
+        app:borderWidth="0dp"
+        app:layout_behavior="despotoski.nikola.github.com.bottomnavigationlayout.BottomNavigationFloatingActionButtonBehavior"
+        app:rippleColor="#ffffff" />
 
     <despotoski.nikola.github.com.bottomnavigationlayout.BottomTabLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
         android:background="@android:color/darker_gray"
-        app:inactive_item_text_color="@android:color/white"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
         app:active_item_color_filter="@android:color/holo_red_dark"
         app:bottom_tabs_menu="@menu/bottom_navigation_items"
-        app:bottom_tabs_menu_parent_background_colors="@array/menu_parent_background_colors"/>
+        app:bottom_tabs_menu_parent_background_colors="@array/menu_parent_background_colors"
+        app:inactive_item_text_color="@android:color/white" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -25,7 +25,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
-import android.support.v4.view.ViewPropertyAnimatorUpdateListener;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.View;
@@ -82,19 +81,22 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
 
     @Override
     public void onDependentViewRemoved(CoordinatorLayout parent, V child, View dependency) {
-        updateScrollingForSnackbar(dependency, true);
+        updateScrollingForSnackbar(dependency, child, true);
         super.onDependentViewRemoved(parent, child, dependency);
     }
 
-    private void updateScrollingForSnackbar(View dependency, boolean enabled) {
+    private void updateScrollingForSnackbar(View dependency, View child, boolean enabled) {
         if (!isTablet && dependency instanceof Snackbar.SnackbarLayout) {
             scrollingEnabled = enabled;
+            if (ViewCompat.getTranslationY(child) < 0) {
+                ViewCompat.setTranslationY(child, 0);
+            }
         }
     }
 
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, V child, View dependency) {
-        updateScrollingForSnackbar(dependency, false);
+        updateScrollingForSnackbar(dependency, child, false);
         return super.onDependentViewChanged(parent, child, dependency);
     }
 
@@ -198,7 +200,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
                 child.bringToFront();
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                     child.getParent().requestLayout();
-                    ((View)child.getParent()).invalidate();
+                    ((View) child.getParent()).invalidate();
                 }
 
             }
