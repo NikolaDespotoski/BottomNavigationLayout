@@ -27,8 +27,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.Interpolator;
 
 import java.util.List;
 
@@ -37,6 +39,7 @@ import java.util.List;
  */
 public class BottomNavigationFloatingActionButtonBehavior extends FloatingActionButton.Behavior {
 
+    private static final Interpolator INTERPOLATOR = new FastOutSlowInInterpolator();
     private int mFabBottomMargin;
     private float mTargetFabTranslationY;
     private int mInitialTranslationY;
@@ -64,10 +67,20 @@ public class BottomNavigationFloatingActionButtonBehavior extends FloatingAction
         return super.layoutDependsOn(parent, child, dependency) || dependency instanceof BottomTabLayout;
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
-    public void onDependentViewRemoved(CoordinatorLayout parent, FloatingActionButton child, View dependency) {
+    public void onDependentViewRemoved(CoordinatorLayout parent, final FloatingActionButton child, View dependency) {
         if (dependency instanceof Snackbar.SnackbarLayout) {
-            ViewCompat.setTranslationY(child, ViewCompat.getTranslationY(child) - mInitialTranslationY - child.getHeight());
+            ValueAnimator valueAnimator = ValueAnimator.ofFloat(ViewCompat.getTranslationY(child) + child.getHeight(), ViewCompat.getTranslationY(child) - mInitialTranslationY - child.getHeight());
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    ViewCompat.setTranslationY(child, (Float) animation.getAnimatedValue());
+                }
+            });
+            valueAnimator.setInterpolator(INTERPOLATOR);
+            valueAnimator.setDuration(200);
+            valueAnimator.start();
             mAnimatorForSnackbar = null;
         }
     }
@@ -90,13 +103,10 @@ public class BottomNavigationFloatingActionButtonBehavior extends FloatingAction
         if (mAnimatorForSnackbar == null) {
             mAnimatorForSnackbar = ViewCompat.animate(child).translationY(-snackbar.getHeight());
             mAnimatorForSnackbar.setDuration(100);
+            mAnimatorForSnackbar.setInterpolator(INTERPOLATOR);
             mAnimatorForSnackbar.start();
         }
 
-    }
-
-    private float getSnackBarHeight(View dependency) {
-        return dependency.getHeight() - dependency.getPaddingBottom();
     }
 
     private void updateFabForBottomBar(CoordinatorLayout parent, View dependency, FloatingActionButton child) {
@@ -110,22 +120,6 @@ public class BottomNavigationFloatingActionButtonBehavior extends FloatingAction
             ViewCompat.setTranslationY(child, mTargetFabTranslationY);
         }
 
-    }
-
-
-    private float getFabTranslationYFromDependencies(CoordinatorLayout parent,
-                                                     FloatingActionButton fab) {
-        float minOffset = 0;
-        final List<View> dependencies = parent.getDependencies(fab);
-        for (int i = 0, z = dependencies.size(); i < z; i++) {
-            final View view = dependencies.get(i);
-            if (view instanceof BottomTabLayout && parent.doViewsOverlap(fab, view)) {
-                minOffset = Math.min(minOffset,
-                        ViewCompat.getTranslationY(view) - view.getHeight());
-            }
-        }
-
-        return minOffset;
     }
 
     @Override
