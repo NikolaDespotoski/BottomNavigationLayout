@@ -28,7 +28,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -39,13 +38,12 @@ import java.util.List;
  */
 public class BottomNavigationFloatingActionButtonBehavior extends FloatingActionButton.Behavior {
 
-    private ViewPropertyAnimatorCompat mFabTranslator;
     private int mFabBottomMargin;
-    private int mTargetFabTranslationY;
+    private float mTargetFabTranslationY;
     private int mInitialTranslationY;
     private boolean isSnackBarShown = false;
     private ValueAnimator mFabTranslationYAnimator;
-    private float mFabTranslationY;
+    private int mNavBarSize = 0;
 
     public BottomNavigationFloatingActionButtonBehavior() {
     }
@@ -65,7 +63,6 @@ public class BottomNavigationFloatingActionButtonBehavior extends FloatingAction
 
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, FloatingActionButton child, View dependency) {
-
         if (dependency instanceof BottomTabLayout) {
             updateFabForBottomBar(parent, dependency, child);
             return true;
@@ -79,8 +76,7 @@ public class BottomNavigationFloatingActionButtonBehavior extends FloatingAction
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void updateFabTranslationForSnackbar(CoordinatorLayout parent,
                                                  final FloatingActionButton fab, View snackbar) {
-        if(mFabTranslationYAnimator == null) {
-            float snackBarHeight = getSnackBarHeight(snackbar);
+        if (mFabTranslationYAnimator == null) {
             float currentY = ViewCompat.getTranslationY(snackbar) - snackbar.getHeight();
             mFabTranslationYAnimator = ValueAnimator.ofFloat(snackbar.getTranslationY(), currentY);
             mFabTranslationYAnimator.setDuration(100);
@@ -106,9 +102,16 @@ public class BottomNavigationFloatingActionButtonBehavior extends FloatingAction
     }
 
     private void updateFabForBottomBar(CoordinatorLayout parent, View dependency, FloatingActionButton child) {
-        int dependencyTranslationY = (int) ViewCompat.getTranslationY(dependency);
-        mTargetFabTranslationY = (dependencyTranslationY - dependency.getHeight());
-        ViewCompat.setTranslationY(child, mTargetFabTranslationY);
+        float dependencyTranslationY = ViewCompat.getTranslationY(dependency);
+        mTargetFabTranslationY = (dependencyTranslationY - dependency.getHeight()) - mNavBarSize;
+        float current = ViewCompat.getTranslationY(child);
+        if (mTargetFabTranslationY <= mInitialTranslationY) {
+            ViewCompat.setTranslationY(child, mInitialTranslationY);
+        } else if (mTargetFabTranslationY >= mTargetFabTranslationY - mNavBarSize) {
+            ViewCompat.setTranslationY(child, mTargetFabTranslationY);
+        } else if (mTargetFabTranslationY > mInitialTranslationY && mTargetFabTranslationY < mTargetFabTranslationY - mNavBarSize) {
+            ViewCompat.setTranslationY(child, mTargetFabTranslationY);
+        }
 
     }
 
@@ -136,6 +139,7 @@ public class BottomNavigationFloatingActionButtonBehavior extends FloatingAction
             if (layoutParams.getAnchorId() != View.NO_ID) return onLayoutChild;
             mFabBottomMargin = layoutParams.bottomMargin;
         }
+        mNavBarSize = Util.getNavigationBarHeight(parent.getContext());
         List<View> dependencies = parent.getDependencies(child);
         for (int i = dependencies.size() - 1; i >= 0; i--) {
             View view = dependencies.get(i);
