@@ -58,6 +58,7 @@ public class BottomNavigationFloatingActionButtonBehavior extends FloatingAction
         }
     };
     private ValueAnimator mReturnAnimator;
+    private boolean mIgnoreNestedScrollingEvents = false;
 
     public BottomNavigationFloatingActionButtonBehavior() {
     }
@@ -74,7 +75,7 @@ public class BottomNavigationFloatingActionButtonBehavior extends FloatingAction
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public void onDependentViewRemoved(CoordinatorLayout parent, final FloatingActionButton child, View dependency) {
-        if (dependency instanceof Snackbar.SnackbarLayout) {
+        if (!mIgnoreNestedScrollingEvents && dependency instanceof Snackbar.SnackbarLayout) {
             mReturnAnimator = ValueAnimator.ofFloat(ViewCompat.getTranslationY(child) + child.getHeight(), ViewCompat.getTranslationY(child) - mInitialTranslationY - child.getHeight());
             mReturnAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -91,12 +92,14 @@ public class BottomNavigationFloatingActionButtonBehavior extends FloatingAction
 
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, FloatingActionButton child, View dependency) {
-        if (dependency instanceof BottomTabLayout) {
-            updateFabForBottomBar(parent, dependency, child);
-            return true;
-        } else if (dependency instanceof Snackbar.SnackbarLayout) {
-            updateFabTranslationForSnackbar(parent, child, dependency);
-            return true;
+        if (!mIgnoreNestedScrollingEvents) {
+            if (dependency instanceof BottomTabLayout) {
+                updateFabForBottomBar(parent, dependency, child);
+                return true;
+            } else if (dependency instanceof Snackbar.SnackbarLayout) {
+                updateFabTranslationForSnackbar(parent, child, dependency);
+                return true;
+            }
         }
         return super.onDependentViewChanged(parent, child, dependency);
     }
@@ -134,7 +137,10 @@ public class BottomNavigationFloatingActionButtonBehavior extends FloatingAction
         boolean onLayoutChild = super.onLayoutChild(parent, child, layoutDirection);
         if (child.getLayoutParams() instanceof CoordinatorLayout.LayoutParams) {
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) child.getLayoutParams();
-            if (layoutParams.getAnchorId() != View.NO_ID) return onLayoutChild;
+            if (layoutParams.getAnchorId() != View.NO_ID) {
+                mIgnoreNestedScrollingEvents = true;
+                return onLayoutChild;
+            }
             mFabBottomMargin = layoutParams.bottomMargin;
         }
         mNavBarSize = Util.getNavigationBarHeight(parent.getContext());
