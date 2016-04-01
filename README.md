@@ -107,6 +107,24 @@ In order to offset the content from BottomNavigatonLayout direct child of the Co
     
 ````
 
+# Use with FloatingActionButton
+
+You must provide `@string/bottom_bar_fab_behavior` as behavior for your FAB:
+```
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_marginRight="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_android_white_24dp"
+        app:borderWidth="0dp"
+        app:layout_behavior="@string/bottom_bar_fab_behavior"
+        app:rippleColor="#ffffff" />
+        
+```
+
 #Notes
 
 1. Number of items must be between 3 and 5 according to Material Design Bottom Navigation Guidelines
