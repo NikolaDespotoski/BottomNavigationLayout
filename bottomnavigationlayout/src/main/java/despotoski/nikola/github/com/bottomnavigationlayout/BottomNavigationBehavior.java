@@ -21,6 +21,7 @@ package despotoski.nikola.github.com.bottomnavigationlayout;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
@@ -59,7 +60,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
         a.recycle();
     }
 
-    public static <V extends View> BottomNavigationBehavior<V> from(V view) {
+    public static <V extends View> BottomNavigationBehavior<V> from(@NonNull V view) {
         ViewGroup.LayoutParams params = view.getLayoutParams();
         if (!(params instanceof CoordinatorLayout.LayoutParams)) {
             throw new IllegalArgumentException("The view is not a child of CoordinatorLayout");
@@ -125,7 +126,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
         handleDirection(child, scrollDirection);
     }
 
-    private void handleDirection(V child, int scrollDirection) {
+    private void handleDirection(V child, @ScrollDirection int scrollDirection) {
         if (!scrollingEnabled) return;
         if (scrollDirection == ScrollDirection.SCROLL_DIRECTION_DOWN && hidden) {
             hidden = false;

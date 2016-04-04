@@ -51,7 +51,7 @@ public class BottomNavigationFloatingActionButtonBehavior extends FloatingAction
     private int mNavBarSize = 0;
     private float mTargetSnackTranslationY;
     private ViewPropertyAnimatorCompat mAnimatorForSnackbar;
-    private AnimatorListenerAdapter mAnimatorListener = new AnimatorListenerAdapter() {
+    private final AnimatorListenerAdapter mAnimatorListener = new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animation) {
             mAnimatorForSnackbar = null;

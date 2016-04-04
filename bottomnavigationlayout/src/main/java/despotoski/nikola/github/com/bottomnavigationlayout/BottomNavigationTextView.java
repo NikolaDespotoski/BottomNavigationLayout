@@ -308,7 +308,7 @@ public final class BottomNavigationTextView extends TextView implements BottomNa
 
         private final TimeInterpolator INTERPOLATOR = new FastOutLinearInInterpolator();
         private ObjectAnimator mAnimator;
-        private Animator.AnimatorListener mAnimatorListener = new AnimatorListenerAdapter() {
+        private final Animator.AnimatorListener mAnimatorListener = new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mAnimator = null;

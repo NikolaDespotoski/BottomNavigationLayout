@@ -538,7 +538,6 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     public interface OnNavigationItemSelectionListener {
         void onBottomNavigationItemSelected(BottomNavigationItem item);
-
         void onBottomNavigationItemUnselected(BottomNavigationItem item);
     }
 
