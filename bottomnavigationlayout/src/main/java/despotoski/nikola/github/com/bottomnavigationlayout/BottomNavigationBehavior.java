@@ -107,6 +107,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
             mTabLayout = findTabLayout(child);
             getTabsHolder();
         }
+
         return layoutChild;
     }
 
@@ -178,6 +179,14 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
         this.scrollingEnabled = scrollingEnabled;
     }
 
+    public void setHidden(V view, boolean bottomLayoutHidden) {
+        if (!bottomLayoutHidden && hidden) {
+            animateOffset(view, 0);
+        } else if (bottomLayoutHidden && !hidden) {
+            animateOffset(view, -view.getHeight());
+        }
+        hidden = bottomLayoutHidden;
+    }
 
     private interface BottomNavigationWithSnackbar {
         void updateSnackbar(CoordinatorLayout parent, View dependency, View child);
