@@ -378,6 +378,16 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         selectTabView();
     }
 
+    /**
+     *  Resets bottom navigation component to translation 0 in case there is no scrollable content to restore its translation from coordinator layout behavior
+     */
+    public void resetBottomTabLayout() {
+        BottomNavigationBehavior<BottomTabLayout> from = BottomNavigationBehavior.from(this);
+        if (from != null) {
+            from.setHidden(this, false);
+        }
+    }
+
     @Override
     protected Parcelable onSaveInstanceState() {
         Parcelable parcelable = super.onSaveInstanceState();
@@ -434,7 +444,6 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
         }
 
     }
-
 
 
     /**
