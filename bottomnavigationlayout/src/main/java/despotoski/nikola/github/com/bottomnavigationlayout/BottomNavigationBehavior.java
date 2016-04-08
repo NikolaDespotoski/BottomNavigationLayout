@@ -46,6 +46,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
     private View mTabsHolder;
     private int mSnackbarHeight = -1;
     private boolean scrollingEnabled = true;
+    private boolean hideAlongSnackbar = false;
 
     public BottomNavigationBehavior() {
         super();
@@ -86,11 +87,16 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
         super.onDependentViewRemoved(parent, child, dependency);
     }
 
-    private void updateScrollingForSnackbar(View dependency, View child, boolean enabled) {
+    private void updateScrollingForSnackbar(View dependency, V child, boolean enabled) {
         if (!isTablet && dependency instanceof Snackbar.SnackbarLayout) {
             scrollingEnabled = enabled;
-            if (ViewCompat.getTranslationY(child) < 0) {
+            if (!hideAlongSnackbar && ViewCompat.getTranslationY(child) != 0) {
                 ViewCompat.setTranslationY(child, 0);
+                hidden = false;
+                hideAlongSnackbar = true;
+            }else if(hideAlongSnackbar){
+                hidden = true;
+                animateOffset(child, -child.getHeight());
             }
         }
     }
