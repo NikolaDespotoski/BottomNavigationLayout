@@ -195,7 +195,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
             mContainer.setPadding(0, 0, (int) getResources().getDimension(R.dimen.bottom_navigation_item_padding_bottom), 0);
             layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.bottom_navigation_height));
             layoutParams.gravity = Gravity.TOP;
-            layoutParams.bottomMargin = Util.isNavigationBarTranslucent(getContext()) && !isLandscape() ? Util.getNavigationBarHeight(getContext()) : 0;
+            layoutParams.bottomMargin = !isInEditMode() && Util.isNavigationBarTranslucent(getContext()) && !isLandscape() ? Util.getNavigationBarHeight(getContext()) : 0;
             mContainer.setOrientation(LinearLayoutCompat.HORIZONTAL);
             mContainer.setGravity(Gravity.CENTER | Gravity.CENTER_HORIZONTAL);
             addView(mContainer, layoutParams);
@@ -213,7 +213,7 @@ public class BottomTabLayout extends DrawShadowFrameLayout {
 
     private void setupOverlayView() {
         int height = (int) getResources().getDimension(R.dimen.bottom_navigation_height);
-        height += Util.isNavigationBarTranslucent(getContext()) && !isLandscape() ? Util.getNavigationBarHeight(getContext()) : 0;
+        height += !isInEditMode() && Util.isNavigationBarTranslucent(getContext()) && !isLandscape() ? Util.getNavigationBarHeight(getContext()) : 0;
         LayoutParams layoutParams;
         if (!isTablet) {
             layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, height);
